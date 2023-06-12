@@ -19,4 +19,4 @@ six==1.16.0
 urllib3==1.26.6
 websocket-client==1.1.0
 shasta-install-utility-common @ git+https://github.com/Cray-HPE/shasta-install-utility-common.git@feature/CASM-3973
-nexusctl==1.1.0
+nexusctl==1.1.1
