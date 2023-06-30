@@ -46,7 +46,7 @@ ARG PIP_EXTRA_INDEX_URL="https://arti.hpc.amslabs.hpecorp.net/artifactory/intern
 
 # RUN does not support ENVs, so specify INSTALLDIR explicitly.
 RUN --mount=type=secret,id=netrc,target=/root/.netrc \
-    apk update && apk add --no-cache python3 git bash && \
+    apk update && apk add --no-cache python3 git bash build-base && \
     python3 -m venv $VIRTUAL_ENV && \
     pip install --no-cache-dir -U pip && \
     git clone https://github.com/Cray-HPE/craycli.git && \
