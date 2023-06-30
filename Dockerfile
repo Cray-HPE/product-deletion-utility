@@ -49,6 +49,10 @@ RUN --mount=type=secret,id=netrc,target=/root/.netrc \
     apk update && apk add --no-cache python3 git bash && \
     python3 -m venv $VIRTUAL_ENV && \
     pip install --no-cache-dir -U pip && \
+    git clone https://github.com/Cray-HPE/craycli.git && \
+    python3 -m pip install craycli/ && \
+    cray --version  && \
+    rm -rf craycli/ && \    
     pip install --no-cache-dir /deletion/ && \
     rm -rf /deletion/
 
