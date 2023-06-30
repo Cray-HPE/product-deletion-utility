@@ -52,4 +52,4 @@ RUN --mount=type=secret,id=netrc,target=/root/.netrc \
     pip install --no-cache-dir /deletion/ && \
     rm -rf /deletion/
 
-ENTRYPOINT ["/entrypoint.sh"]
+#ENTRYPOINT ["/entrypoint.sh"]
