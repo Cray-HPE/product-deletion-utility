@@ -26,3 +26,7 @@
 PIP_EXTRA_INDEX_URL="https://arti.hpc.amslabs.hpecorp.net/artifactory/internal-pip-stable-local/ \
     https://artifactory.algol60.net/artifactory/csm-python-modules/simple" \
 pip3 install -r requirements-dev.lock.txt
+git clone https://github.com/Cray-HPE/craycli.git
+cd craycli
+python3 -m pip install .
+cray --version
