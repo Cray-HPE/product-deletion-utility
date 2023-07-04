@@ -39,7 +39,7 @@ COPY product_deletion_utility ${INSTALLDIR}/product_deletion_utility
 COPY docker_scripts/entrypoint.sh /entrypoint.sh
 COPY zypper.sh /
 RUN chmod +x /entrypoint.sh
-RUN --mount=type=secret,id=ARTIFACTORY_READONLY_USER,src=/home/jenkins/.config/secrets/ARTIFACTORY_READONLY_USER --mount=type=secret,id=ARTIFACTORY_READONLY_TOKEN,src=/home/jenkins/.config/secrets/ARTIFACTORY_READONLY_TOKEN ./zypper.sh && rm /zypper.sh
+RUN --mount=type=secret,src=/home/jenkins/.config/secrets/ARTIFACTORY_READONLY_USER --mount=type=secret,src=/home/jenkins/.config/secrets/ARTIFACTORY_READONLY_TOKEN ./zypper.sh && rm /zypper.sh
 # For external dependencies, always pull from internal-pip-stable-local
 
 # TODO: stop pulling from internal artifactory when nexusctl is open source.
