@@ -23,7 +23,8 @@
 #
 # Dockerfile for product_deletion_utility
 
-FROM artifactory.algol60.net/csm-docker/stable/docker.io/library/alpine:3.16
+#FROM artifactory.algol60.net/csm-docker/stable/docker.io/library/alpine:3.16
+FROM opensuse/leap:15.3
 
 ENV VIRTUAL_ENV=/opt/venv
 ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
@@ -36,8 +37,9 @@ COPY requirements.lock.txt ${INSTALLDIR}/requirements.txt
 COPY tools ${INSTALLDIR}/tools
 COPY product_deletion_utility ${INSTALLDIR}/product_deletion_utility
 COPY docker_scripts/entrypoint.sh /entrypoint.sh
+COPY zypper.sh /
 RUN chmod +x /entrypoint.sh
-
+RUN --mount=type=secret,id=ARTIFACTORY_READONLY_USER,src=/home/jenkins/.config/secrets/ARTIFACTORY_READONLY_USER --mount=type=secret,id=ARTIFACTORY_READONLY_TOKEN,src=/home/jenkins/.config/secrets/ARTIFACTORY_READONLY_TOKEN ./zypper.sh && rm /zypper.sh
 # For external dependencies, always pull from internal-pip-stable-local
 
 # TODO: stop pulling from internal artifactory when nexusctl is open source.
@@ -46,13 +48,9 @@ ARG PIP_EXTRA_INDEX_URL="https://arti.hpc.amslabs.hpecorp.net/artifactory/intern
 
 # RUN does not support ENVs, so specify INSTALLDIR explicitly.
 RUN --mount=type=secret,id=netrc,target=/root/.netrc \
-    apk update && apk add --no-cache python3 git bash build-base python3-dev && \
+#    apk update && apk add --no-cache python3 git bash && \
     python3 -m venv $VIRTUAL_ENV && \
     pip install --no-cache-dir -U pip && \
-    git clone https://github.com/Cray-HPE/craycli.git && \
-    python3 -m pip install craycli/ && \
-    cray --version  && \
-    rm -rf craycli/ && \    
     pip install --no-cache-dir /deletion/ && \
     rm -rf /deletion/
 
