@@ -13,6 +13,8 @@ zypper --non-interactive ar ${SLES_MIRROR}/Updates/SLE-Module-Containers/15-SP4/
 zypper --non-interactive ar --no-gpgcheck ${CSM_RPMS_HPE_STABLE}/sle-15sp2/?auth=basic CSM-SLE-15SP2
 zypper --non-interactive ar --no-gpgcheck ${CSM_RPMS_HPE_STABLE}/sle-15sp3/?auth=basic CSM-SLE-15SP3
 zypper update -y
-zypper install -y craycli git-core bash
+zypper install -y craycli git-core bash python3
+python3 --version
+cray --version
 zypper clean -a && zypper --non-interactive rr --all && rm -f /etc/zypp/repos.d/*
 
