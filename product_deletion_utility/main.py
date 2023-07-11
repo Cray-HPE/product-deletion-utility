@@ -71,8 +71,8 @@ def delete(args):
         nexus_credentials_secret_namespace=args.nexus_credentials_secret_namespace
     )
     product_catalog.remove_product_docker_images(args.product, args.version)
-    product_catalog.uninstall_product_hosted_repos(args.product, args.version)
-    product_catalog.remove_product_entry(args.product, args.version)
+    #product_catalog.uninstall_product_hosted_repos(args.product, args.version)
+    #product_catalog.remove_product_entry(args.product, args.version)
 
     # TODO (CRAYSAT-1262): Remove CFS configuration layer as appropriate
 
