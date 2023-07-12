@@ -28,13 +28,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.2] - 2023-04-07
 ### Changed
 - Changing the base image from alpine to opensuse and adding craycli to the image
+  Adding new classes for deletion of components for a product version
 
 ## [0.0.1] - 2023-03-09
 ### Changed
 - Changing this from sat-install-utility to product-deletion-utility
-
-## [0.0.3] - 2023-07-12
-### Changed
-- Adding new class and functions for deletion of components for a product version
 
 
