@@ -45,47 +45,37 @@ from nexusctl import DockerApi, DockerClient, NexusApi, NexusClient
 
 class UninstallComponents():
     """"Uninstall individual components of the product version.
-
-    Attributes:
-       DockerApi: instance of DockerApi 
-       NexusApi: instance of NexusApi
     """
-
-    def __init__(self, docker_url, nexus_url):
-        self.docker_api = DockerApi(DockerClient(docker_url))
-        self.nexus_api = NexusApi(NexusClient(nexus_url))
 
     def uninstall_docker_image(docker_image_name, docker_image_version, docker_api):
         """Remove a Docker image.
-
         It is not recommended to call this function directly, instead use
-        ProductCatalog.uninstall_product_docker_images to check that the image
+        ProductCatalog.remove_product_docker_images to check that the image
         is not in use by another product.
-
         Args:
             docker_image_name (str): The name of the Docker image to uninstall.
             docker_image_version (str): The version of the Docker image to uninstall.
             docker_api (DockerApi): The nexusctl Docker API to interface with
                 the Docker registry.
-
         Returns:
             None
-
         Raises:
             ProductInstallException: If an error occurred removing the image.
         """
         docker_image_short_name = f'{docker_image_name}:{docker_image_version}'
         try:
             repo_list = docker_api.list_repos()
+            print(f'Listing all repos')
+            print(f'{repo_list}')
+
             """docker_api.delete_image(
                 docker_image_name, docker_image_version
             )
             print(f'Removed Docker image {docker_image_short_name}')"""
-            print(f'Listing all repos')
-            print(f'{repo_list}')
+
         except HTTPError as err:
             if err.code == 404:
-                print(f'{docker_image_short_name} has already been removed.')
+                print(f'{docker_image_short_name} has already been removed')
             else:
                 raise ProductInstallException(
                     f'Failed to remove image {docker_image_short_name}: {err}'
@@ -93,149 +83,178 @@ class UninstallComponents():
 
     def uninstall_S3_artifact(s3_bucket, s3_key):
         """Removes an S3 artifact.
-
         It is not recommended to call this function directly, instead use
         DeleteProductComponent.remove_product_S3_artifacts to check that the artifact
         is not in use by another product.
-
         Args:
             s3_bucket (str): The name of the S3 bucket which has the artifact to be deleted.
             s3_key (str): The key of the artifact to be removed.
-
         Returns:
             None
-
         Raises:
             ProductInstallException: If an error occurred removing the artifact.
         """
         s3_artifact_short_name = f'{s3_bucket}:{s3_key}'
         try:
             output = subprocess.check_output(
-                ["cray", "artifacts", "list", "boot-images"], text=True)
+                ["cray", "artifacts", "list", "boot-images"], universal_newlines=True)
+                #["cray", "artifacts", "delete", {s3_bucket}, {s3_key}], universal_newlines=True)
             print(f'Output of cray artifacts list is {output}')
         except subprocess.CalledProcessError as err:
             raise ProductInstallException(
                 f'Failed to remove S3 artifacts {s3_artifact_short_name} with error: {err}'
             )
 
-    def uninstall_hosted_repos(self, nexus_api):
+    def uninstall_hosted_repos(self, hosted_repos, nexus_api):
         """Remove a version's package repositories from Nexus.
-
+        It is not recommended to call this function directly, instead use
+        DeleteProductComponent.remove_product_hosted_repos to check that the helm chart
+        is not in use by another product.
         Args:
-            nexus_api (NexusApi): The nexusctl Nexus API to interface with
-            Nexus.
-
-            Returns:
-                None
-
-            Raises:
-                ProductInstallException: If an error occurred removing a repository.
-            """
+            nexus_api (NexusApi): The nexusctl Nexus API to interface with Nexus.
+        Returns:
+            None
+        Raises:
+            ProductInstallException: If an error occurred removing a repository.
+        """
         errors = False
-        for hosted_repo_name in self.hosted_repository_names:
+        for hosted_repo_name in self.hosted_repos:
             try:
                 nexus_api.repos.delete(hosted_repo_name)
-                print(f'Repository {hosted_repo_name} has been removed.')
+                print(f'Repository {hosted_repo_name} has been removed')
             except HTTPError as err:
                 if err.code == 404:
-                    print(f'{hosted_repo_name} has already been removed.')
+                    print(f'{hosted_repo_name} has already been removed')
                 else:
                     print(
                         f'Failed to remove hosted repository {hosted_repo_name}: {err}')
                     errors = True
         if errors:
             raise ProductInstallException(
-                f'One or more errors occurred uninstalling repositories for {self.name} {self.version}.'
+                f'One or more errors occurred uninstalling repositories for {self.name} {self.version}'
             )
 
-    def uninstall_helm_charts(chart_name, chart_version):
+    def uninstall_helm_charts(chart_name, chart_version, component_nexus_id, nexus_api):
         """Removes a helm chart.
-
         It is not recommended to call this function directly, instead use
-        DeleteProductComponent.remove_product_S3_artifacts to check that the artifact
+        DeleteProductComponent.remove_product_helm_charts to check that the helm chart
         is not in use by another product.
-
         Args:
             chart_name   (str): The name of the helm chart to be deleted.
             chart_version(str): The verison of the helm chart to be removed.
-
+            component_nexus_id(str): Nexus ID of the helm chart to be removed.
+            nexus_api (NexusApi): The nexusctl Nexus API to interface with Nexus.
         Returns:
             None
-
         Raises:
-            ProductInstallException: If an error occurred removing the artifact.
+            ProductInstallException: If an error occurred removing the helm chart.
         """
-        pass
+        helm_chart_short_name: str = f"{chart_name}:{chart_version}"
+        try:
+            nexus_api.components.delete(component_nexus_id)
+        except HTTPError as err:
+            if err.code == 404:
+                print(
+                    f"Helm chart {helm_chart_short_name} has already been removed")
+            else:
+                raise ProductInstallException(
+                    f"Failed to remove helm chart {helm_chart_short_name} from nexus")
 
-    def uninstall_helm_charts(chart_name, chart_version):
-        """Removes a helm chart.
 
-        It is not recommended to call this function directly, instead use
-        DeleteProductComponent.remove_product_helm_artifacts to check that the artifact
-        is not in use by another product.
-
-        Args:
-            chart_name   (str): The name of the helm chart to be deleted.
-            chart_version(str): The verison of the helm chart to be removed.
-
-        Returns:
-            None
-
-        Raises:
-            ProductInstallException: If an error occurred removing the artifact.
-        """
-        pass
-
-    def uninstall_loftsman_manifests(manifests):
+    def uninstall_loftsman_manifests(manifest_keys):
         """Removes loftsman manifests for a product version from the repo.
-
         Args:
-            manifests   (list): List of yaml files containing loftsman manifest 
-                                for deletion.
-
+            manifests (list): List of yaml files containing loftsman manifest
+                              for deletion.
         Returns:
             None
-
         Raises:
             ProductInstallException: If an error occurred removing the artifact.
         """
-        pass
+        try:
+            for manifest_key in manifest_keys:
+                output = subprocess.check_output(
+                    ["cray", "artifacts", "list", "config-data"], universal_newlines=True)
+                    #["cray", "artifacts", "delete", "config-data", {manifest_key}], universal_newlines=True)
+                print(f'Output of cray artifacts list is {output}')
+        except subprocess.CalledProcessError as err:
+            raise ProductInstallException(
+                f'Failed to remove loftsman manifest {manifest_key} from S3 with error: {err}'
+            )
 
     def uninstall_ims_recipes(recipes):
-        """Removes ims images for a product version from the s3.
-
+        """Removes ims recipes for a product version from the S3.
         Args:
-            receipes (list of dictionaries): List of receipes and ids
-
+            recipes (list of dictionaries): List of recipe names and ids
         Returns:
             None
-
         Raises:
             ProductInstallException: If an error occurred removing the artifact.
         """
-        pass
+        try:
+            for name, id in recipes:
+                print(f'Recipe ID and name from CPC are {id}, {name}')
+                command = "cray artifacts list ims --format json | jq -r '.artifacts[] | select(.Key|test(\"^.*{}.*$\")) | .Key'".format(id)
+                recipe_s3_key = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+                print(f'Output of cray artifacts list is {recipe_s3_key}')
+                if not recipe_s3_key:
+                    print(f'S3 key could not be retrieved for recipe ID - {id}')
+
+                '''else:
+                    s3_delete_command = "cray artifacts delete ims {}".format(recipe_s3_key)
+                    output = subprocess.check_output(s3_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+                    print(f'Output from recipe delete from S3 - {output}')
+                    print(f'Successfully deleted recipe {name} from S3')
+
+                    ims_delete_command = "cray ims recipes delete {}".format(id)
+                    output = subprocess.check_output(ims_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+                    print(f'Output from recipe delete from IMS - {output}')
+                    print(f'Successfully deleted recipe {name} from IMS')'''
+
+        except subprocess.CalledProcessError as err:
+            raise ProductInstallException(
+                f'Failed to remove IMS recipe {name} with error: {err}'
+            )
 
     def uninstall_ims_images(images):
-        """Removes ims images for a product version from the s3.
-
+        """Removes ims images for a product version from the S3.
         Args:
-            manifests (list of dictionaries): List of images and ids 
-                                for deletion.
-
+            images (list of dictionaries): List of image names and ids
         Returns:
             None
-
         Raises:
             ProductInstallException: If an error occurred removing the artifact.
         """
-        pass
+        try:
+            for name, id in images:
+                print(f'Image ID and name from CPC are {id}, {name}')
+                command = "cray artifacts list boot-images --format json | jq -r '.artifacts[] | select(.Key|test(\"^.*{}.*$\")) | .Key'".format(id)
+                image_s3_keys = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+                print(f'Output of cray artifacts list is {image_s3_keys}')
+                if not image_s3_keys:
+                    print(f'S3 key could not be retrieved for image ID - {id}')
+
+                '''else:
+                    for image_s3_key in image_s3_keys:
+                        s3_delete_command = "cray artifacts delete boot-images {}".format(image_s3_key)
+                        output = subprocess.check_output(s3_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+                        print(f'Output from image delete from S3 - {output}')
+                        print(f'Successfully deleted image {name} from S3')
+
+                    ims_delete_command = "cray ims images delete {}".format(id)
+                    output = subprocess.check_output(ims_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+                    print(f'Output from image delete from IMS - {output}')
+                    print(f'Successfully deleted image {name} from IMS')'''
+
+        except subprocess.CalledProcessError as err:
+            raise ProductInstallException(
+                f'Failed to remove IMS image {name} with error: {err}'
+            )
 
 
 class DeleteProductComponent(ProductCatalog):
     """"Inherit the ProductCatalog from cray-product-catalog and add additional methods for supporting deletion of components.
-
     Delete each component of a product currently installed.
-
     Attributes:
         name: The product name.
         version: The product version.
@@ -252,28 +271,28 @@ class DeleteProductComponent(ProductCatalog):
 
         self.pname = productname
         self.pversion = productversion
-        self.uninstall_component = UninstallComponents(nexus_url, docker_url)
+        self.uninstall_component = UninstallComponents()
+        self.docker_api = DockerApi(DockerClient(docker_url))
+        self.nexus_api = NexusApi(NexusClient(nexus_url))
+
         # inheriting the properties of parent ProductCatalog class
         super().__init__(catalogname, catalognamespace)
 
     def remove_product_docker_images(self):
         """Remove a product's Docker images.
-
         This function will only remove images that are not used by another
         product in the catalog. For images that are used by another
-
         Args:
             None
-
         Returns:
             None
-
         Raises:
             ProductInstallException: If an error occurred removing an image.
         """
         product = self.get_product(self.pname, self.pversion)
 
         images_to_remove = product.docker_images
+        print(f'Images to remove are - {images_to_remove}')
         other_products = [
             p for p in self.products
             if p.version != product.version or p.name != product.name
@@ -301,23 +320,20 @@ class DeleteProductComponent(ProductCatalog):
                     print(
                         f'Failed to remove {image_name}:{image_version}: {err}')
                     errors = True
+                    continue
 
         if errors:
             raise ProductInstallException(f'One or more errors occurred removing '
-                                          f'Docker images for {self.pname} {self.pversion}.')
+                                          f'Docker images for {self.pname} {self.pversion}')
 
     def remove_product_S3_artifacts(self):
         """Remove a product's S3 artifacts.
-
         This function will only remove artifacts that are not used by another
         product in the catalog.
-
         Args:
             None
-
         Returns:
             None
-
         Raises:
             ProductInstallException: If an error occurred removing an artifact.
         """
@@ -354,6 +370,7 @@ class DeleteProductComponent(ProductCatalog):
                     print(
                         f'Failed to remove {artifact_bucket}:{artifact_bucket}: {err}')
                     errors = True
+                    continue
 
         if errors:
             raise ProductInstallException(f'One or more errors occurred removing '
@@ -361,23 +378,29 @@ class DeleteProductComponent(ProductCatalog):
 
     def remove_product_helm_charts(self):
         """Remove a product's helm charts.
-
         This function will only remove helm charts that are not used by another
         product in the catalog.
-
         Args:
             None
-
         Returns:
             None
-
         Raises:
-            ProductInstallException: If an error occurred removing an artifact.
+            ProductInstallException: If an error occurred removing a helm chart.
         """
         product = self.get_product(self.pname, self.pversion)
 
         charts_to_remove = product.helm
         print(f'Charts to remove are - {charts_to_remove}')
+
+        if not charts_to_remove:
+            print(f"No helm charts found in the configmap data for {self.name}:{self.version}")
+            return
+        try:
+            nexus_charts = self.nexus_api.components.list("charts")
+        except HTTPError as err:
+            raise ProductInstallException(
+                f"Failed to load Nexus components for 'charts' repository: {err}"
+        )
         other_products = [
             p for p in self.products
             if p.version != product.version or p.name != product.name
@@ -399,106 +422,104 @@ class DeleteProductComponent(ProductCatalog):
                       f'{", ".join(str(p) for p in other_products_with_same_helm_chart)}')
             else:
                 try:
-                    self.uninstall_component.uninstall_helm_charts(
-                        chart_name, chart_version)
-                    print(
-                        f'Will be removing the following chart - {chart_name}:{chart_version}')
+                    for component in nexus_charts.components:
+                        if component.name == chart_name and component.version == chart_version:
+                            print(
+                                f'Will be removing the following chart - {chart_name}:{chart_version}')
+                            self.uninstall_component.uninstall_helm_charts(
+                                chart_name, chart_version, self.nexus_api, component.id)
                 except ProductInstallException as err:
                     print(
                         f'Failed to remove {chart_name}:{chart_version}: {err}')
                     errors = True
+                    continue
 
         if errors:
-            raise ProductInstallException(f'One or more errors occurred removing '
-                                          f'Helm Charts for {self.pname} {self.pversion}.')
+            raise ProductInstallException(f'One or more errors occurred while removing '
+                                          f'Helm Charts for {self.pname} {self.pversion}')
 
     def remove_product_loftsman_manifests(self):
         """Remove a product's loftsman manifests.
-
         Args:
             None
-
         Returns:
             None
-
         Raises:
-            ProductInstallException: If an error occurred removing an artifact.
+            ProductInstallException: If an error occurred removing loftsman manifest.
         """
         product = self.get_product(self.pname, self.pversion)
 
         manifests_to_remove = product.loftsman_manifests
         print(f'Manifests to remove are - {manifests_to_remove}')
-        self.uninstall_component.uninstall_loftsman_manifests(
-            manifests_to_remove)
+        try:
+            self.uninstall_component.uninstall_loftsman_manifests(manifests_to_remove)
+        except ProductInstallException as err:
+            raise ProductInstallException(f'One or more errors occurred while removing '
+                                          f'loftsman manifests for {self.pname} {self.pversion} \n {err}')
 
     def remove_ims_recipes(self):
-        """Remove a product's ims receipes.
-
+        """Remove a product's ims recipes.
         Args:
             None
-
         Returns:
             None
-
         Raises:
-            ProductInstallException: If an error occurred removing an artifact.
+            ProductInstallException: If an error occurred removing an IMS recipe.
         """
         product = self.get_product(self.pname, self.pversion)
 
-        ims_receipes_to_remove = product.recipes
-        print(f'ims receipes to remove are - {ims_receipes_to_remove}')
-        self.uninstall_component.uninstall_ims_recipes(ims_receipes_to_remove)
+        ims_recipes_to_remove = product.recipes
+        print(f'ims recipes to remove are - {ims_recipes_to_remove}')
+        try:
+            self.uninstall_component.uninstall_ims_recipes(ims_recipes_to_remove)
+        except ProductInstallException as err:
+            raise ProductInstallException(f'One or more errors occurred while removing '
+                                          f'IMS recipes for {self.pname} {self.pversion} \n {err}')
 
     def remove_ims_images(self):
         """Remove a product's ims images.
-
         Args:
             None
-
         Returns:
             None
-
         Raises:
-            ProductInstallException: If an error occurred removing an artifact.
+            ProductInstallException: If an error occurred removing an IMS image.
         """
         product = self.get_product(self.pname, self.pversion)
-
         ims_images_to_remove = product.images
-        print(f'ims images to remove are - {ims_images_to_remove}')
-        self.uninstall_component.uninstall_ims_images(ims_images_to_remove)
+        print(f'IMS images to remove are - {ims_images_to_remove}')
+        try:
+            self.uninstall_component.uninstall_ims_images(ims_images_to_remove)
+        except ProductInstallException as err:
+            raise ProductInstallException(f'One or more errors occurred while removing '
+                                          f'IMS images for {self.pname} {self.pversion} \n {err}')
 
-    def uninstall_product_hosted_repos(self):
-        """Uninstall a product's hosted repositories.
-
+    def remove_product_hosted_repos(self):
+        """Remove a product's hosted repositories.
         Args:
-            name (str): The name of the product for which to uninstall
-                repositories.
-            version (str): The version of the product for which to uninstall
-                repositories.
-
+            None
         Returns:
             None
-
         Raises:
-            ProductInstallException: If an error occurred uninstalling
-                repositories.
+            ProductInstallException: If an error occurred uninstalling repositories.
         """
-        product_to_uninstall = self.get_product(self.pname, self.pversion)
-        product_to_uninstall.uninstall_hosted_repos(self.nexus_api)
+        product = self.get_product(self.pname, self.pversion)
+        hosted_repos_to_remove = product.hosted_repositories
+        print(f'Hosted repositories to remove are - {hosted_repos_to_remove}')
+        try:
+            self.uninstall_component.uninstall_hosted_repos(hosted_repos_to_remove, self.nexus_api)
+        except ProductInstallException as err:
+            raise ProductInstallException(f'One or more errors occurred while removing '
+                                          f'hosted repos for {self.pname} {self.pversion} \n {err}')
 
     def remove_product_entry(self):
         """Remove this product version's entry from the product catalog.
-
         This function uses the catalog_delete script provided by
         cray-product-catalog.
-
         Args:
-            name (str): The name of the product to remove.
-            version (str): The version of the product to remove.
-
+            None
         Returns:
             None
-
         Raises:
             ProductInstallException: If an error occurred removing the entry.
         """
@@ -512,7 +533,7 @@ class DeleteProductComponent(ProductCatalog):
         })
         try:
             subprocess.check_output(['catalog_delete'])
-            print(f'Deleted {self.name}-{self.version} from product catalog.')
+            print(f'Deleted {self.name}-{self.version} from product catalog')
         except subprocess.CalledProcessError as err:
             raise ProductInstallException(
                 f'Error removing {self.name}-{self.version} from product catalog: {err}'

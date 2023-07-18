@@ -27,17 +27,14 @@ Entry point for the product deletion utility.
 
 import logging
 
-from product_deletion_utility.components.delete import DeleteProductInstallException, DeleteProductComponent
+from product_deletion_utility.components.delete import DeleteProductComponent
 from product_deletion_utility.parser.parser import create_parser
-from product_deletion_utility.components.delete import DeleteProductComponents
-
+from cray_product_catalog.query import ProductInstallException
 
 def configure_logging():
     """Configure logging for the root logger.
-
     This sets up the root logger with the default format, WARNING log level, and
     stderr log handler.
-
     Returns:
         None.
     """
@@ -53,13 +50,10 @@ def configure_logging():
 
 def delete(args):
     """Delete a version of a product.
-
     Args:
         args (argparse.Namespace): The CLI arguments to the command.
-
     Returns:
         None
-
     Raises:
         ProductInstallException: if uninstall failed.
     """
@@ -77,18 +71,16 @@ def delete(args):
     delete_product_catalog.remove_product_S3_artifacts
     delete_product_catalog.remove_product_helm_charts
     delete_product_catalog.remove_product_loftsman_manifests
-    delete_product_catalog.remove_ims_recipes
     delete_product_catalog.remove_ims_images
-    delete_product_catalog.uninstall_product_hosted_repos
+    delete_product_catalog.remove_ims_recipes
+    delete_product_catalog.remove_product_hosted_repos
     delete_product_catalog.remove_product_entry
 
 
 def main():
     """Main entry point.
-
     Returns:
         None
-
     Raises:
         SystemExit: if a ProductInstallException occurs.
     """
@@ -98,7 +90,7 @@ def main():
     try:
         if args.action == 'delete' or args.action == 'uninstall':
             delete(args)
-    except DeleteProductInstallException as err:
+    except ProductInstallException as err:
         print(err)
         raise SystemExit(1)
 
