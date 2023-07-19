@@ -105,7 +105,7 @@ class UninstallComponents():
                 f'Failed to remove S3 artifacts {s3_artifact_short_name} with error: {err}'
             )
 
-    def uninstall_hosted_repos(self, hosted_repos, nexus_api):
+    def uninstall_hosted_repos(self, hosted_repo_name, nexus_api):
         """Remove a version's package repositories from Nexus.
         It is not recommended to call this function directly, instead use
         DeleteProductComponent.remove_product_hosted_repos to check that the helm chart
@@ -117,22 +117,18 @@ class UninstallComponents():
         Raises:
             ProductInstallException: If an error occurred removing a repository.
         """
-        errors = False
-        for hosted_repo_name in self.hosted_repos:
-            try:
-                nexus_api.repos.delete(hosted_repo_name)
-                print(f'Repository {hosted_repo_name} has been removed')
-            except HTTPError as err:
-                if err.code == 404:
-                    print(f'{hosted_repo_name} has already been removed')
-                else:
-                    print(
-                        f'Failed to remove hosted repository {hosted_repo_name}: {err}')
-                    errors = True
-        if errors:
-            raise ProductInstallException(
-                f'One or more errors occurred uninstalling repositories for {self.name} {self.version}'
-            )
+        try:
+            nexus_api.repos.list(hosted_repo_name)
+            #nexus_api.repos.delete(hosted_repo_name)
+            print(f'Repository {hosted_repo_name} has been removed')
+        except HTTPError as err:
+            if err.code == 404:
+                print(f'{hosted_repo_name} has already been removed')
+            else:
+                raise ProductInstallException(
+                    f'Failed to remove repository {hosted_repo_name}: {err}'
+                )
+
 
     def uninstall_helm_charts(chart_name, chart_version, component_nexus_id, nexus_api):
         """Removes a helm chart.
@@ -151,7 +147,8 @@ class UninstallComponents():
         """
         helm_chart_short_name: str = f"{chart_name}:{chart_version}"
         try:
-            nexus_api.components.delete(component_nexus_id)
+            nexus_api.components.list("charts")
+            #nexus_api.components.delete(component_nexus_id)
         except HTTPError as err:
             if err.code == 404:
                 print(
@@ -182,73 +179,71 @@ class UninstallComponents():
                 f'Failed to remove loftsman manifest {manifest_key} from S3 with error: {err}'
             )
 
-    def uninstall_ims_recipes(recipes):
+    def uninstall_ims_recipes(recipe_name, recipe_id):
         """Removes ims recipes for a product version from the S3.
         Args:
             recipes (list of dictionaries): List of recipe names and ids
         Returns:
             None
         Raises:
-            ProductInstallException: If an error occurred removing the artifact.
+            ProductInstallException: If an error occurred removing the IMS recipe.
         """
         try:
-            for name, id in recipes:
-                print(f'Recipe ID and name from CPC are {id}, {name}')
-                command = "cray artifacts list ims --format json | jq -r '.artifacts[] | select(.Key|test(\"^.*{}.*$\")) | .Key'".format(id)
-                recipe_s3_key = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
-                print(f'Output of cray artifacts list is {recipe_s3_key}')
-                if not recipe_s3_key:
-                    print(f'S3 key could not be retrieved for recipe ID - {id}')
+            print(f'Recipe ID and name from CPC are {recipe_id}, {recipe_name}')
+            command = "cray artifacts list ims --format json | jq -r '.artifacts[] | select(.Key|test(\"^.*{}.*$\")) | .Key'".format(recipe_id)
+            recipe_s3_key = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+            print(f'Output of cray artifacts list is {recipe_s3_key}')
+            if not recipe_s3_key:
+                print(f'S3 key could not be retrieved for recipe ID - {recipe_id}')
 
-                '''else:
-                    s3_delete_command = "cray artifacts delete ims {}".format(recipe_s3_key)
-                    output = subprocess.check_output(s3_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
-                    print(f'Output from recipe delete from S3 - {output}')
-                    print(f'Successfully deleted recipe {name} from S3')
+            '''else:
+                s3_delete_command = "cray artifacts delete ims {}".format(recipe_s3_key)
+                output = subprocess.check_output(s3_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+                print(f'Output from recipe delete from S3 - {output}')
+                print(f'Successfully deleted recipe - {recipe_name} from S3')
 
-                    ims_delete_command = "cray ims recipes delete {}".format(id)
-                    output = subprocess.check_output(ims_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
-                    print(f'Output from recipe delete from IMS - {output}')
-                    print(f'Successfully deleted recipe {name} from IMS')'''
+                ims_delete_command = "cray ims recipes delete {}".format(recipe_id)
+                output = subprocess.check_output(ims_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+                print(f'Output from recipe delete from IMS - {output}')
+                print(f'Successfully deleted recipe - {recipe_name} from IMS')'''
 
         except subprocess.CalledProcessError as err:
             raise ProductInstallException(
-                f'Failed to remove IMS recipe {name} with error: {err}'
+                f'Failed to remove IMS recipe {recipe_name} with error: {err}'
             )
 
-    def uninstall_ims_images(images):
+    def uninstall_ims_images(image_name, image_id):
         """Removes ims images for a product version from the S3.
         Args:
             images (list of dictionaries): List of image names and ids
         Returns:
             None
         Raises:
-            ProductInstallException: If an error occurred removing the artifact.
+            ProductInstallException: If an error occurred removing the IMS image.
         """
         try:
-            for name, id in images:
-                print(f'Image ID and name from CPC are {id}, {name}')
-                command = "cray artifacts list boot-images --format json | jq -r '.artifacts[] | select(.Key|test(\"^.*{}.*$\")) | .Key'".format(id)
-                image_s3_keys = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
-                print(f'Output of cray artifacts list is {image_s3_keys}')
-                if not image_s3_keys:
-                    print(f'S3 key could not be retrieved for image ID - {id}')
+            print(f'Image ID and name from CPC are {image_id}, {image_name}')
+            command = "cray artifacts list boot-images --format json | jq -r '.artifacts[] | select(.Key|test(\"^.*{}.*$\")) | .Key'".format(image_id)
+            image_s3_keys = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+            print(f'Output of cray artifacts list is {image_s3_keys}')
+            if not image_s3_keys:
+                print(f'S3 key could not be retrieved for image ID - {image_id}')
 
-                '''else:
-                    for image_s3_key in image_s3_keys:
-                        s3_delete_command = "cray artifacts delete boot-images {}".format(image_s3_key)
-                        output = subprocess.check_output(s3_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
-                        print(f'Output from image delete from S3 - {output}')
-                        print(f'Successfully deleted image {name} from S3')
+            '''else:
+                for image_s3_key in image_s3_keys:
+                    s3_delete_command = "cray artifacts delete boot-images {}".format(image_s3_key)
+                    output = subprocess.check_output(s3_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+                    print(f'Output from image delete from S3 - {output}')
+                    print(f'Successfully deleted image - {image_name} from S3')
 
-                    ims_delete_command = "cray ims images delete {}".format(id)
-                    output = subprocess.check_output(ims_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
-                    print(f'Output from image delete from IMS - {output}')
-                    print(f'Successfully deleted image {name} from IMS')'''
+                ims_delete_command = "cray ims images delete {}".format(image_id)
+                output = subprocess.check_output(ims_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+                print(f'Output from image delete from IMS - {output}')
+                print(f'Successfully deleted image - {image_name} from IMS')'''
 
         except subprocess.CalledProcessError as err:
             raise ProductInstallException(
-                f'Failed to remove IMS image {name} with error: {err}'
+                f'Failed to remove IMS image {image_name} with error: {err}'
             )
 
 
@@ -469,12 +464,43 @@ class DeleteProductComponent(ProductCatalog):
         product = self.get_product(self.pname, self.pversion)
 
         ims_recipes_to_remove = product.recipes
-        print(f'ims recipes to remove are - {ims_recipes_to_remove}')
-        try:
-            self.uninstall_component.uninstall_ims_recipes(ims_recipes_to_remove)
-        except ProductInstallException as err:
-            raise ProductInstallException(f'One or more errors occurred while removing '
-                                          f'IMS recipes for {self.pname} {self.pversion} \n {err}')
+        print(f'IMS recipes to remove are - {ims_recipes_to_remove}')
+
+        other_products = [
+            p for p in self.products
+            if p.version != product.version or p.name != product.name
+        ]
+
+        errors = False
+        # For each image to remove, check if it is shared by any other products.
+        for recipe_name, recipe_id in ims_recipes_to_remove:
+            other_products_with_same_recipe = [
+                other_product for other_product in other_products
+                if any([
+                    other_recipe_name == recipe_name and other_recipe_id == recipe_id
+                    for other_recipe_name, other_recipe_id in other_product.recipes
+                ])
+            ]
+            if other_products_with_same_recipe:
+                print(f'Not removing IMS recipe {recipe_name}:{recipe_id} '
+                      f'used by the following other product versions: '
+                      f'{", ".join(str(p) for p in other_products_with_same_recipe)}')
+            else:
+                try:
+                    self.uninstall_component.uninstall_ims_recipes(
+                        recipe_name, recipe_id)
+                    print(
+                        f'Will be removing the following IMS recipe - {recipe_name}:{recipe_id}')
+                except ProductInstallException as err:
+                    print(
+                        f'Failed to remove {recipe_name}:{recipe_id}: {err}')
+                    errors = True
+                    continue
+
+        if errors:
+            raise ProductInstallException(f'One or more errors occurred removing '
+                                          f'IMS recipes for {self.pname} {self.pversion}')
+
 
     def remove_ims_images(self):
         """Remove a product's ims images.
@@ -488,11 +514,42 @@ class DeleteProductComponent(ProductCatalog):
         product = self.get_product(self.pname, self.pversion)
         ims_images_to_remove = product.images
         print(f'IMS images to remove are - {ims_images_to_remove}')
-        try:
-            self.uninstall_component.uninstall_ims_images(ims_images_to_remove)
-        except ProductInstallException as err:
-            raise ProductInstallException(f'One or more errors occurred while removing '
-                                          f'IMS images for {self.pname} {self.pversion} \n {err}')
+
+        other_products = [
+            p for p in self.products
+            if p.version != product.version or p.name != product.name
+        ]
+
+        errors = False
+        # For each image to remove, check if it is shared by any other products.
+        for image_name, image_id in ims_images_to_remove:
+            other_products_with_same_image = [
+                other_product for other_product in other_products
+                if any([
+                    other_image_name == image_name and other_image_id == image_id
+                    for other_image_name, other_image_id in other_product.images
+                ])
+            ]
+            if other_products_with_same_image:
+                print(f'Not removing IMS image {image_name}:{image_id} '
+                      f'used by the following other product versions: '
+                      f'{", ".join(str(p) for p in other_products_with_same_image)}')
+            else:
+                try:
+                    self.uninstall_component.uninstall_ims_images(
+                        image_name, image_id)
+                    print(
+                        f'Will be removing the following IMS image - {image_name}:{image_id}')
+                except ProductInstallException as err:
+                    print(
+                        f'Failed to remove {image_name}:{image_id}: {err}')
+                    errors = True
+                    continue
+
+        if errors:
+            raise ProductInstallException(f'One or more errors occurred removing '
+                                          f'IMS images for {self.pname} {self.pversion}')
+
 
     def remove_product_hosted_repos(self):
         """Remove a product's hosted repositories.
@@ -506,11 +563,40 @@ class DeleteProductComponent(ProductCatalog):
         product = self.get_product(self.pname, self.pversion)
         hosted_repos_to_remove = product.hosted_repositories
         print(f'Hosted repositories to remove are - {hosted_repos_to_remove}')
-        try:
-            self.uninstall_component.uninstall_hosted_repos(hosted_repos_to_remove, self.nexus_api)
-        except ProductInstallException as err:
-            raise ProductInstallException(f'One or more errors occurred while removing '
-                                          f'hosted repos for {self.pname} {self.pversion} \n {err}')
+
+        other_products = [
+            p for p in self.products
+            if p.version != product.version or p.name != product.name
+        ]
+
+        errors = False
+        # For each hosted repo to remove, check if it is shared by any other products.
+        for hosted_repo_name in hosted_repos_to_remove:
+            other_products_with_same_hosted_repo = [
+                other_product for other_product in other_products
+                if any([
+                    other_hosted_repo_name == hosted_repo_name
+                    for other_hosted_repo_name in other_product.hosted_repositories
+                ])
+            ]
+            if other_products_with_same_hosted_repo:
+                print(f'Not removing hosted repo {hosted_repo_name} '
+                      f'used by the following other product versions: '
+                      f'{", ".join(str(p) for p in other_products_with_same_hosted_repo)}')
+            else:
+                try:
+                    self.uninstall_component.uninstall_hosted_repos(
+                        hosted_repo_name, self.nexus_api)
+                    print(
+                        f'Will be removing the following hosted repo - {hosted_repo_name}')
+                except ProductInstallException as err:
+                    print(
+                        f'Failed to remove {hosted_repo_name} : {err}')
+                    errors = True
+                    continue
+        if errors:
+            raise ProductInstallException(f'One or more errors occurred removing '
+                                          f'hosted repos for {self.pname} {self.pversion}')
 
     def remove_product_entry(self):
         """Remove this product version's entry from the product catalog.
