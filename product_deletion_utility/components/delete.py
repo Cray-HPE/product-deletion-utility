@@ -28,7 +28,7 @@ Entry point for the product deletion utility.
 import subprocess
 import os
 
-from cray_product_catalog.query import ProductCatalog, ProductInstallException
+from cray_product_catalog.query import ProductCatalog
 from cray_product_catalog.constants import (
     PRODUCT_CATALOG_CONFIG_MAP_NAME,
     PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
@@ -42,6 +42,9 @@ from product_deletion_utility.components.constants import (
 from urllib.error import HTTPError
 from nexusctl import DockerApi, DockerClient, NexusApi, NexusClient
 
+class ProductInstallException(Exception):
+    """An error occurred reading or manipulating product installs."""
+    pass
 
 class UninstallComponents():
     """"Uninstall individual components of the product version.

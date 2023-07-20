@@ -27,9 +27,9 @@ Entry point for the product deletion utility.
 
 import logging
 
-from product_deletion_utility.components.delete import DeleteProductComponent
+from product_deletion_utility.components.delete import DeleteProductComponent, ProductInstallException
 from product_deletion_utility.parser.parser import create_parser
-from cray_product_catalog.query import ProductInstallException
+#from cray_product_catalog.query import ProductInstallException
 
 def configure_logging():
     """Configure logging for the root logger.
