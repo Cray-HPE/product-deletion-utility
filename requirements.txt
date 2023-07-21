@@ -1,4 +1,4 @@
 # Top-level requirements for product-deletion-utility
 # (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP.
-shasta-install-utility-common >= 2.3.0, < 3.0
+# shasta-install-utility-common >= 2.3.0, < 3.0
 PyYAML < 6.0.0

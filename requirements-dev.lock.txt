@@ -3,7 +3,6 @@ cachetools==4.2.2
 certifi==2022.12.7
 charset-normalizer==2.0.3
 coverage==5.5
-cray-product-catalog==1.3.2
 google-auth==1.34.0
 idna==3.2
 jsonschema==3.2.0
@@ -20,7 +19,7 @@ PyYAML==5.4.1
 requests==2.26.0
 requests-oauthlib==1.3.0
 rsa==4.7.2
-shasta-install-utility-common==2.3.1
 six==1.16.0
 urllib3==1.26.6
 websocket-client==1.1.0
+shasta-install-utility-common @ git+https://github.com/Cray-HPE/shasta-install-utility-common.git@feature/CASM-3973
