@@ -273,6 +273,7 @@ class DeleteProductComponent(ProductCatalog):
         self.docker_api = DockerApi(DockerClient(docker_url))
         self.nexus_api = NexusApi(NexusClient(nexus_url))
 
+        print(f'catalog name and namespace are {catalogname}, {catalognamespace}')
         # inheriting the properties of parent ProductCatalog class
         super().__init__(catalogname, catalognamespace)
 
