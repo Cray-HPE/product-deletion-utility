@@ -297,7 +297,7 @@ class DeleteProductComponent(ProductCatalog):
             secret = self.k8s_client.read_namespaced_secret(
                 secret_name, secret_namespace
             )
-            print("In _update_environment_with_nexus_credentials, and secret is {secret}")
+            print(f"In _update_environment_with_nexus_credentials, and secret is {secret.data['username']}, {secret.data['password']}")
         except (MaxRetryError, ApiException):
             print(f'WARNING: unable to read Kubernetes secret {secret_namespace}/{secret_name}')
             return
@@ -328,6 +328,13 @@ class DeleteProductComponent(ProductCatalog):
         )
         self.docker_api = DockerApi(DockerClient(docker_url))
         self.nexus_api = NexusApi(NexusClient(nexus_url))
+
+
+        repo_list = self.docker_api.list_repos()
+        print(f'Listing all repos')
+        print(f'{repo_list}')
+
+
 
         print(f'catalog name and namespace are {catalogname}, {catalognamespace}')
         # inheriting the properties of parent ProductCatalog class
