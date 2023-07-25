@@ -28,6 +28,6 @@ set -e
 # and updates /etc/ssl/certs/ca-certificates.crt
 # REQUESTS_CA_BUNDLE is used by python
 #
-export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
 update-ca-certificates 2>/dev/null
 product-deletion-utility "$@"
