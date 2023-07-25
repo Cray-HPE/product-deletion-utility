@@ -27,6 +27,8 @@ Entry point for the product deletion utility.
 
 import subprocess
 import os
+from base64 import b64decode
+import warnings
 
 from cray_product_catalog.query import ProductCatalog
 from cray_product_catalog.constants import (
@@ -39,8 +41,13 @@ from product_deletion_utility.components.constants import (
     DEFAULT_NEXUS_URL,
     DEFAULT_DOCKER_URL,
 )
+from kubernetes.client import CoreV1Api
+from kubernetes.client.rest import ApiException
+from kubernetes.config import load_kube_config, ConfigException
+from urllib3.exceptions import MaxRetryError
 from urllib.error import HTTPError
 from nexusctl import DockerApi, DockerClient, NexusApi, NexusClient
+from yaml import YAMLLoadWarning
 
 class ProductInstallException(Exception):
     """An error occurred reading or manipulating product installs."""
@@ -50,7 +57,7 @@ class UninstallComponents():
     """"Uninstall individual components of the product version.
     """
 
-    def uninstall_docker_image(docker_image_name, docker_image_version, docker_api):
+    def uninstall_docker_image(self, docker_image_name, docker_image_version, docker_api):
         """Remove a Docker image.
         It is not recommended to call this function directly, instead use
         ProductCatalog.remove_product_docker_images to check that the image
@@ -84,7 +91,7 @@ class UninstallComponents():
                     f'Failed to remove image {docker_image_short_name}: {err}'
                 )
 
-    def uninstall_S3_artifact(s3_bucket, s3_key):
+    def uninstall_S3_artifact(self, s3_bucket, s3_key):
         """Removes an S3 artifact.
         It is not recommended to call this function directly, instead use
         DeleteProductComponent.remove_product_S3_artifacts to check that the artifact
@@ -133,7 +140,7 @@ class UninstallComponents():
                 )
 
 
-    def uninstall_helm_charts(chart_name, chart_version, component_nexus_id, nexus_api):
+    def uninstall_helm_charts(self, chart_name, chart_version, component_nexus_id, nexus_api):
         """Removes a helm chart.
         It is not recommended to call this function directly, instead use
         DeleteProductComponent.remove_product_helm_charts to check that the helm chart
@@ -161,7 +168,7 @@ class UninstallComponents():
                     f"Failed to remove helm chart {helm_chart_short_name} from nexus")
 
 
-    def uninstall_loftsman_manifests(manifest_keys):
+    def uninstall_loftsman_manifests(self, manifest_keys):
         """Removes loftsman manifests for a product version from the repo.
         Args:
             manifests (list): List of yaml files containing loftsman manifest
@@ -182,7 +189,7 @@ class UninstallComponents():
                 f'Failed to remove loftsman manifest {manifest_key} from S3 with error: {err}'
             )
 
-    def uninstall_ims_recipes(recipe_name, recipe_id):
+    def uninstall_ims_recipes(self, recipe_name, recipe_id):
         """Removes ims recipes for a product version from the S3.
         Args:
             recipes (list of dictionaries): List of recipe names and ids
@@ -215,7 +222,7 @@ class UninstallComponents():
                 f'Failed to remove IMS recipe {recipe_name} with error: {err}'
             )
 
-    def uninstall_ims_images(image_name, image_id):
+    def uninstall_ims_images(self, image_name, image_id):
         """Removes ims images for a product version from the S3.
         Args:
             images (list of dictionaries): List of image names and ids
@@ -258,6 +265,49 @@ class DeleteProductComponent(ProductCatalog):
         version: The product version.
     """
 
+    @staticmethod
+    def _get_k8s_api():
+        """Load a Kubernetes CoreV1Api and return it.
+        Returns:
+            CoreV1Api: The Kubernetes API.
+        Raises:
+            ProductInstallException: if there was an error loading the
+                Kubernetes configuration.
+        """
+        try:
+            with warnings.catch_warnings():
+                warnings.filterwarnings('ignore', category=YAMLLoadWarning)
+                load_kube_config()
+            return CoreV1Api()
+        except ConfigException as err:
+            raise ProductInstallException(f'Unable to load kubernetes configuration: {err}')
+
+    def _update_environment_with_nexus_credentials(self, secret_name, secret_namespace):
+        """Get the credentials for Nexus HTTP API access from a Kubernetes secret.
+        Nexusctl expects these to be set as environment variables. If they
+        cannot be obtained from a k8s secret, then print a warning and return.
+        Args:
+            secret_name (str): The name of the secret.
+            secret_namespace (str): The namespace of the secret.
+        Returns:
+            None. Updates os.environ as is expected by Nexusctl.
+        """
+        try:
+            secret = self.k8s_client.read_namespaced_secret(
+                secret_name, secret_namespace
+            )
+        except (MaxRetryError, ApiException):
+            print(f'WARNING: unable to read Kubernetes secret {secret_namespace}/{secret_name}')
+            return
+        if secret.data is None:
+            print(f'WARNING: unable to read Kubernetes secret {secret_namespace}/{secret_name}')
+            return
+
+        os.environ.update({
+            'NEXUS_USERNAME': b64decode(secret.data['username']).decode(),
+            'NEXUS_PASSWORD': b64decode(secret.data['password']).decode()
+        })
+
     def __init__(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
                  catalognamespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
                  productname=None,
@@ -270,12 +320,17 @@ class DeleteProductComponent(ProductCatalog):
         self.pname = productname
         self.pversion = productversion
         self.uninstall_component = UninstallComponents()
+        self.k8s_client = self._get_k8s_api()
+        self._update_environment_with_nexus_credentials(
+            nexus_credentials_secret_name, nexus_credentials_secret_namespace
+        )
         self.docker_api = DockerApi(DockerClient(docker_url))
         self.nexus_api = NexusApi(NexusClient(nexus_url))
 
         print(f'catalog name and namespace are {catalogname}, {catalognamespace}')
         # inheriting the properties of parent ProductCatalog class
         super().__init__(catalogname, catalognamespace)
+
 
     def remove_product_docker_images(self):
         """Remove a product's Docker images.
