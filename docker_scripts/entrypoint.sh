@@ -22,12 +22,16 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-set -e
+set -ex
 #
 # update-ca-certficates reads from /usr/local/share/ca-certificates
 # and updates /etc/ssl/certs/ca-certificates.crt
 # REQUESTS_CA_BUNDLE is used by python
 #
-export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
-update-ca-certificates 2>/dev/null
+#export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
+#update-ca-certificates 2>/dev/null
+env
+export REQUESTS_CA_BUNDLE=/etc/ssl/ca-bundle.pem
+env
+update-ca-certificates -v
 product-deletion-utility "$@"
