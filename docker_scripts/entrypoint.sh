@@ -31,7 +31,8 @@ set -ex
 #export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
 #update-ca-certificates 2>/dev/null
 env
-export REQUESTS_CA_BUNDLE=/etc/ssl/ca-bundle.pem
+#export REQUESTS_CA_BUNDLE=/etc/ssl/ca-bundle.pem
+export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 env
 update-ca-certificates -v
 product-deletion-utility "$@"
