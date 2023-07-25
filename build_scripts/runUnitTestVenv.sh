@@ -25,4 +25,4 @@
 
 base_dir=$(dirname "$0")
 source product-deletion-utility-venv/bin/activate
-#$base_dir/runUnitTest.sh
+$base_dir/runUnitTest.sh
