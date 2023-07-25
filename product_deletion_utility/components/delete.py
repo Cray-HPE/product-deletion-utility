@@ -275,6 +275,7 @@ class DeleteProductComponent(ProductCatalog):
                 Kubernetes configuration.
         """
         try:
+            print("In _get_k8s_api")
             with warnings.catch_warnings():
                 warnings.filterwarnings('ignore', category=YAMLLoadWarning)
                 load_kube_config()
@@ -296,6 +297,7 @@ class DeleteProductComponent(ProductCatalog):
             secret = self.k8s_client.read_namespaced_secret(
                 secret_name, secret_namespace
             )
+            print("In _update_environment_with_nexus_credentials, and secret is {secret}")
         except (MaxRetryError, ApiException):
             print(f'WARNING: unable to read Kubernetes secret {secret_namespace}/{secret_name}')
             return
