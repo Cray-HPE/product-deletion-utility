@@ -25,12 +25,14 @@
 Unit tests for the product_deletion_utility.main module.
 """
 
-
 from argparse import Namespace
+import subprocess
 import unittest
 from unittest.mock import patch, Mock
 
 from urllib.error import HTTPError
+
+from cray_product_catalog.query import  ProductInstallException
 
 from product_deletion_utility.main import (
     main,
@@ -99,8 +101,6 @@ class TestDelete(unittest.TestCase):
         self.mock_product_catalog.remove_ims_images.assert_called_once()
         self.mock_product_catalog.uninstall_product_hosted_repos.assert_called_once()
         self.mock_product_catalog.remove_product_entry.assert_called_once()
-
-
 
 class TestMain(unittest.TestCase):
     def setUp(self):
