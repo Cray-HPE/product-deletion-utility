@@ -32,8 +32,6 @@ from unittest.mock import patch, Mock
 
 from urllib.error import HTTPError
 
-from cray_product_catalog.query import  ProductInstallException
-
 from product_deletion_utility.main import (
     main,
     delete
