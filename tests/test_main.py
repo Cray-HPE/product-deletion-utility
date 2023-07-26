@@ -54,8 +54,6 @@ class TestDelete(unittest.TestCase):
         self.mock_product_catalog = self.mock_product_catalog_cls.return_value
 
         self.mock_product = self.mock_product_catalog.get_product.return_value
-        self.mock_product.product = 'old-product'
-        self.mock_product.version = 'x.y.z'
 
     def tearDown(self):
         """Stop patches."""
@@ -66,8 +64,8 @@ class TestDelete(unittest.TestCase):
         delete(Namespace(
             catalogname='mock_name',
             catalognamespace='mock_namespace',
-            productname=self.mock_product.product,
-            productversion=self.mock_product.version,
+            productname="mock_product",,
+            productversion="mock_version",
             nexus_url='mock_nexus_url',
             docker_url='mock_docker_url',
             nexus_credentials_secret_name='mock_nexus_secret',
@@ -76,8 +74,8 @@ class TestDelete(unittest.TestCase):
         self.mock_product_catalog_cls.assert_called_once_with(
             catalogname='mock_name',
             catalognamespace='mock_namespace',
-            productname=self.mock_product.product,
-            productversion=self.mock_product.version,
+            productname="mock_product",
+            productversion="mock_version",
             nexus_url='mock_nexus_url',
             docker_url='mock_docker_url',
             nexus_credentials_secret_name='mock_nexus_secret',
