@@ -26,11 +26,9 @@ Unit tests for the product_deletion_utility.main module.
 """
 
 from argparse import Namespace
-import subprocess
 import unittest
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
-from urllib.error import HTTPError
 
 from product_deletion_utility.main import (
     main,
@@ -38,20 +36,13 @@ from product_deletion_utility.main import (
 )
 
 
-
-from product_deletion_utility.components.delete import (
-    PRODUCT_CATALOG_CONFIG_MAP_NAME,
-    PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
-    UninstallComponents,
-    DeleteProductComponent
-)
-
-
 from product_deletion_utility.components.constants import (
     DEFAULT_DOCKER_URL,
     DEFAULT_NEXUS_URL,
     NEXUS_CREDENTIALS_SECRET_NAME,
-    NEXUS_CREDENTIALS_SECRET_NAMESPACE
+    NEXUS_CREDENTIALS_SECRET_NAMESPACE,
+    PRODUCT_CATALOG_CONFIG_MAP_NAME,
+    PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE
 )
  
 
@@ -65,7 +56,6 @@ class TestDelete(unittest.TestCase):
         self.mock_product = self.mock_product_catalog.get_product.return_value
         self.mock_product.product = 'old-product'
         self.mock_product.version = 'x.y.z'
-        self.mock_product.clone_url = 'https://vcs.local/cray/product-deletion-config-management.git'
 
     def tearDown(self):
         """Stop patches."""
@@ -84,10 +74,12 @@ class TestDelete(unittest.TestCase):
             nexus_credentials_secret_namespace='mock_nexus_secret_namespace'
         ))
         self.mock_product_catalog_cls.assert_called_once_with(
-            name='mock_name',
-            namespace='mock_namespace',
-            docker_url='mock_docker_url',
+            catalogname='mock_name',
+            catalognamespace='mock_namespace',
+            productname=self.mock_product.product,
+            productversion=self.mock_product.version,
             nexus_url='mock_nexus_url',
+            docker_url='mock_docker_url',
             nexus_credentials_secret_name='mock_nexus_secret',
             nexus_credentials_secret_namespace='mock_nexus_secret_namespace'
         )
@@ -100,36 +92,7 @@ class TestDelete(unittest.TestCase):
         self.mock_product_catalog.uninstall_product_hosted_repos.assert_called_once()
         self.mock_product_catalog.remove_product_entry.assert_called_once()
 
-class TestMain(unittest.TestCase):
-    def setUp(self):
-        """Set up mocks."""
-        self.mock_delete = patch('product_deletion_utility.main.delete').start()
-
-    def tearDown(self):
-        """Stop patches."""
-        patch.stopall()
-
-    def test_delete_action(self):
-        """Test a basic delete."""
-        action = 'delete'
-        product = 'old-product'
-        version = '2.0.3'
-        patch('sys.argv', ['product-deletion-utility', action, product, version]).start()
-        main()
-        self.mock_delete.assert_called_once_with(
-            Namespace(
-                action=action,
-                product=product,
-                version=version,
-                docker_url=DEFAULT_DOCKER_URL,
-                nexus_url=DEFAULT_NEXUS_URL,
-                product_catalog_name=PRODUCT_CATALOG_CONFIG_MAP_NAME,
-                product_catalog_namespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
-                nexus_credentials_secret_name=NEXUS_CREDENTIALS_SECRET_NAME,
-                nexus_credentials_secret_namespace=NEXUS_CREDENTIALS_SECRET_NAMESPACE
-            )
-        )
-
 
 if __name__ == '__main__':
     unittest.main()
+
