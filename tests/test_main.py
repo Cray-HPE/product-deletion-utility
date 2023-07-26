@@ -62,12 +62,12 @@ class TestDelete(unittest.TestCase):
     def test_delete_success(self):
         """Test the successful case for uninstall()."""
         delete(Namespace(
-            catalogname='mock_name',
-            catalognamespace='mock_namespace',
             productname="mock_product",
             productversion="mock_version",
+			docker_url='mock_docker_url',
             nexus_url='mock_nexus_url',
-            docker_url='mock_docker_url',
+            catalogname='mock_name',
+            catalognamespace='mock_namespace',
             nexus_credentials_secret_name='mock_nexus_secret',
             nexus_credentials_secret_namespace='mock_nexus_secret_namespace'
         ))
