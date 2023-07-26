@@ -32,8 +32,6 @@ from unittest.mock import patch, Mock
 
 from urllib.error import HTTPError
 
-from cray_product_catalog.query import  ProductInstallException
-
 from product_deletion_utility.main import (
     main,
     delete
@@ -45,7 +43,7 @@ from product_deletion_utility.components.delete import (
     PRODUCT_CATALOG_CONFIG_MAP_NAME,
     PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
     UninstallComponents,
-    DeleteProductComponent
+    DeleteProductComponent,ProductInstallException
 )
 
 
