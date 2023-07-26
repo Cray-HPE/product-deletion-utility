@@ -56,7 +56,7 @@ class TestUninstallComponents(unittest.TestCase):
         """Set up mocks"""
         self.mock_UninstallComponents= patch('product_deletion_utility.components.delete.UninstallComponents').start()
         self.mock_docker_api= patch('nexusctl.DockerApi').start()
-        self.mock_docker_api.list_repos=Mock(return_value="repo_names")
+        self.mock_docker_api.list_repos=Mock()
         
 	      
     def tearDown(self):
@@ -64,6 +64,7 @@ class TestUninstallComponents(unittest.TestCase):
         patch.stopall()	
 
     def test_uninstall_docker_image(self):
+	self.mock_UninstallComponents.uninstall_docker_image('image1', 'version1', self.mock_docker_api)
         self.mock_UninstallComponents.uninstall_docker_image.assert_called_once_with('image1', 'version1', self.mock_docker_api)
 	    
 class TestMain(unittest.TestCase):
