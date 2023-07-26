@@ -64,7 +64,7 @@ class TestDelete(unittest.TestCase):
         delete(Namespace(
             catalogname='mock_name',
             catalognamespace='mock_namespace',
-            productname="mock_product",,
+            productname="mock_product",
             productversion="mock_version",
             nexus_url='mock_nexus_url',
             docker_url='mock_docker_url',
