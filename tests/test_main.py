@@ -113,7 +113,7 @@ class TestUninstallComponents(unittest.TestCase):
         self.mock_UninstallComponents.uninstall_hosted_repos('repo1', self.mock_nexus_api)
         self.mock_nexus_api.repos.delete.assert_called_once_with('repo1')
 	
-    def test_uninstall_hosted_repos_err(self)
+    def test_uninstall_hosted_repos_err(self):
 	
         self.mock_nexus_api.repos.delete.side_effect = ProductInstallException(
         "Error occurred" )
@@ -171,7 +171,7 @@ class TestUninstallComponents(unittest.TestCase):
         self.mock_subprocess.check_output.assert_called_once_with('cmd_s3')
         self.mock_subprocess.check_output.assert_called_once_with('cmd_ims')
 	
-   def test_uninstall_ims_recipies_err(self)
+   def test_uninstall_ims_recipies_err(self):
 	
         self.mock_subprocess.check_output.side_effect = ProductInstallException(
         "Error occurred")
