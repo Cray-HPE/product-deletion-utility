@@ -64,7 +64,7 @@ class TestUninstallComponents(unittest.TestCase):
         patch.stopall()	
 
     def test_uninstall_docker_image(self):
-	self.mock_UninstallComponents.uninstall_docker_image('image1', 'version1', self.mock_docker_api)
+        self.mock_UninstallComponents.uninstall_docker_image('image1', 'version1', self.mock_docker_api)
         self.mock_UninstallComponents.uninstall_docker_image.assert_called_once_with('image1', 'version1', self.mock_docker_api)
 	    
 class TestMain(unittest.TestCase):
