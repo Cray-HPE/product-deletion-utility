@@ -42,8 +42,10 @@ set -ex
 env
 ls /usr/local/share/ca-certificates/
 ls /etc/pki/trust/anchors/
-ls /var/lib/ca-certificates/
+ls -al /var/lib/ca-certificates/
+chown nobody:nobody /var/lib/ca-certificates/
+su nobody -g nobody
 export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
 env
-update-ca-certificates -v
+#update-ca-certificates -v
 product-deletion-utility "$@"
