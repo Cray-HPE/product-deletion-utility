@@ -43,8 +43,8 @@ env
 ls /usr/local/share/ca-certificates/
 ls /etc/pki/trust/anchors/
 ls -al /var/lib/ca-certificates/
-chown nobody:nobody /var/lib/ca-certificates/
-su nobody -g nobody
+#chown nobody:nobody /var/lib/ca-certificates/
+#su nobody -g nobody
 export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
 env
 #update-ca-certificates -v
