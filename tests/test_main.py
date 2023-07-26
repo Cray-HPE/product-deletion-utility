@@ -36,7 +36,7 @@ from product_deletion_utility.main import (
 )
 
 from product_deletion_utility.components.delete import (
-     UninstallComponents
+     UninstallComponents,
      DeleteProductComponent,ProductInstallException
 )
 
