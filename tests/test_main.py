@@ -89,7 +89,35 @@ class TestDelete(unittest.TestCase):
         self.mock_product_catalog.remove_ims_images.assert_called_once()
         self.mock_product_catalog.uninstall_product_hosted_repos.assert_called_once()
         self.mock_product_catalog.remove_product_entry.assert_called_once()
+class TestMain(unittest.TestCase):
+    def setUp(self):
+        """Set up mocks."""
+        self.mock_delete = patch('product_deletion_utility.main.delete').start()
 
+    def tearDown(self):
+        """Stop patches."""
+        patch.stopall()
+
+    def test_delete_action(self):
+        """Test a basic delete."""
+        action = 'delete'
+        product = 'old-product'
+        version = '2.0.3'
+        patch('sys.argv', ['product-deletion-utility', action, product, version]).start()
+        main()
+        self.mock_delete.assert_called_once_with(
+            Namespace(
+                action=action,
+                product=product,
+                version=version,
+                docker_url=DEFAULT_DOCKER_URL,
+                nexus_url=DEFAULT_NEXUS_URL,
+                product_catalog_name=PRODUCT_CATALOG_CONFIG_MAP_NAME,
+                product_catalog_namespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
+                nexus_credentials_secret_name=NEXUS_CREDENTIALS_SECRET_NAME,
+                nexus_credentials_secret_namespace=NEXUS_CREDENTIALS_SECRET_NAMESPACE
+            )
+        )
 
 if __name__ == '__main__':
     unittest.main()
