@@ -85,7 +85,7 @@ class TestUninstallComponents(unittest.TestCase):
         "Error occurred")
 		
         with self.assertRaises(ProductInstallException):
-        self.mock_UninstallComponents.uninstall_docker_image('image1', 'version1', self.mock_docker_api)
+             self.mock_UninstallComponents.uninstall_docker_image('image1', 'version1', self.mock_docker_api)
 		
         self.mock_docker_api.delete_image.assert_called_once_with('image1', 'version1')
 		
@@ -103,7 +103,7 @@ class TestUninstallComponents(unittest.TestCase):
         "Error occurred")
 	    	
         with self.assertRaises(ProductInstallException):
-        self.mock_UninstallComponents.uninstall_s3_artifacts('bucket1', 'key1')
+             self.mock_UninstallComponents.uninstall_s3_artifacts('bucket1', 'key1')
 	
         self.mock_subprocess.check_output.assert_called_once_with('bucket1', 'key1')
         self.mock_print.assert_called_once_with("Failed to remove bucket1:key1 from S3 artifacts")
@@ -119,7 +119,7 @@ class TestUninstallComponents(unittest.TestCase):
         "Error occurred" )
 	
         with self.assertRaises(ProductInstallException):
-        self.mock_UninstallComponents.uninstall_hosted_repos('repo1', self.mock_nexus_api)
+             self.mock_UninstallComponents.uninstall_hosted_repos('repo1', self.mock_nexus_api)
 	
         self.mock_print.assert_called_once_with("Failed to remove repository repo1")
 		
@@ -134,7 +134,7 @@ class TestUninstallComponents(unittest.TestCase):
         "Error occurred" )
 	   
         with self.assertRaises(ProductInstallException):
-        self.mock_UninstallComponents.uninstall_helm_charts('chart1', 'version1', 'nexus_id', mock_nexus_api)
+             self.mock_UninstallComponents.uninstall_helm_charts('chart1', 'version1', 'nexus_id', mock_nexus_api)
 	
         self.mock_print.assert_called_once_with("Failed to remove helm chart chart1 ")
 	
@@ -154,7 +154,7 @@ class TestUninstallComponents(unittest.TestCase):
          "Error occurred" )
 	
         with self.assertRaises(ProductInstallException) as context:
-        self.mock_UninstallComponents.uninstall_loftsman_manifests(mock_manifest_keys)
+             self.mock_UninstallComponents.uninstall_loftsman_manifests(mock_manifest_keys)
 	
         self.mock_print.assert_called_once_with("Failed to remove loftsman manifest manifest_keys from S3")
 		
@@ -177,7 +177,7 @@ class TestUninstallComponents(unittest.TestCase):
         "Error occurred")
 
         with self.assertRaises(ProductInstallException) as context:
-        self.mock_UninstallComponents.uninstall_ims_recipies('recipe1', 'recipe_id1')
+             self.mock_UninstallComponents.uninstall_ims_recipies('recipe1', 'recipe_id1')
 	
         self.mock_print.assert_called_once_with("Failed to remove IMS recipe 'recipe1' ")
 
@@ -200,7 +200,7 @@ class TestUninstallComponents(unittest.TestCase):
          "Error occurred" )
 
         with self.assertRaises(ProductInstallException) as context:
-        self.mock_UninstallComponents.uninstall_ims_recipies('image1', 'image_id1')
+             self.mock_UninstallComponents.uninstall_ims_recipies('image1', 'image_id1')
 
         self.mock_print.assert_called_once_with("Failed to remove IMS image image1")
 
