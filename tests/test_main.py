@@ -54,7 +54,7 @@ class TestUninstallComponents(unittest.TestCase):
 
     def setup(self):
         """Set up mocks"""
-        self.mock_UninstallComponents= patch('product_deletion_utility.components.delete.UninstallComponents').start()
+        self.mock_Uninstall_Components= UninstallComponents()
         self.mock_docker_api= Mock()
         self.mock_nexus_api= Mock()
         self.mock_UninstallComponents.uninstall_docker_image= Mock()
