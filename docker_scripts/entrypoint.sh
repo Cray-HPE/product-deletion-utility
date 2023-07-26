@@ -34,13 +34,16 @@ set -ex
 #export REQUESTS_CA_BUNDLE=/etc/ssl/ca-bundle.pem
 #export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 #export REQUESTS_CA_BUNDLE=/opt/venv/lib64/python3.6/site-packages/certifi/cacert.pem
-env
+
 #export REQUESTS_CA_BUNDLE=/etc/pki/trust/anchors/ca-bundle.pem
 #cp /etc/ssl/ca-bundle.pem /etc/pki/trust/anchors/
+#export REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/platform-ca-certs.crt
+
+env
 ls /usr/local/share/ca-certificates/
 ls /etc/pki/trust/anchors/
-export REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/platform-ca-certs.crt
+ls /var/lib/ca-certificates/
+export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
 env
-#c_rehash
 update-ca-certificates -v
 product-deletion-utility "$@"
