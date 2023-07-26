@@ -353,9 +353,11 @@ class DeleteProductComponent(ProductCatalog):
             ProductInstallException: If an error occurred removing an image.
         """
         product = self.get_product(self.pname, self.pversion)
-
         images_to_remove = product.docker_images
-        print(f'Images to remove are - {images_to_remove}')
+        print(f'Images to remove are - {images_to_remove}')        
+        if not images_to_remove:
+            print(f"No docker images found in the configmap data for {self.pname}:{self.pversion}")
+            return
         other_products = [
             p for p in self.products
             if p.version != product.version or p.name != product.name
@@ -404,6 +406,9 @@ class DeleteProductComponent(ProductCatalog):
 
         artifacts_to_remove = product.s3_artifacts
         print(f'Artifacts to remove are - {artifacts_to_remove}')
+        if not artifacts_to_remove:
+            print(f"No S3 artifacts found in the configmap data for {self.pname}:{self.pversion}")
+            return
         other_products = [
             p for p in self.products
             if p.version != product.version or p.name != product.name
@@ -454,9 +459,8 @@ class DeleteProductComponent(ProductCatalog):
 
         charts_to_remove = product.helm
         print(f'Charts to remove are - {charts_to_remove}')
-
         if not charts_to_remove:
-            print(f"No helm charts found in the configmap data for {self.name}:{self.version}")
+            print(f"No helm charts found in the configmap data for {self.pname}:{self.pversion}")
             return
         try:
             nexus_charts = self.nexus_api.components.list("charts")
@@ -514,6 +518,9 @@ class DeleteProductComponent(ProductCatalog):
 
         manifests_to_remove = product.loftsman_manifests
         print(f'Manifests to remove are - {manifests_to_remove}')
+        if not manifests_to_remove:
+            print(f"No loftsman manifests found in the configmap data for {self.pname}:{self.pversion}")
+            return
         try:
             self.uninstall_component.uninstall_loftsman_manifests(manifests_to_remove)
         except ProductInstallException as err:
@@ -533,7 +540,9 @@ class DeleteProductComponent(ProductCatalog):
 
         ims_recipes_to_remove = product.recipes
         print(f'IMS recipes to remove are - {ims_recipes_to_remove}')
-
+        if not ims_recipes_to_remove:
+            print(f"No IMS recipes found in the configmap data for {self.pname}:{self.pversion}")
+            return
         other_products = [
             p for p in self.products
             if p.version != product.version or p.name != product.name
@@ -582,7 +591,9 @@ class DeleteProductComponent(ProductCatalog):
         product = self.get_product(self.pname, self.pversion)
         ims_images_to_remove = product.images
         print(f'IMS images to remove are - {ims_images_to_remove}')
-
+        if not ims_images_to_remove:
+            print(f"No IMS images found in the configmap data for {self.pname}:{self.pversion}")
+            return
         other_products = [
             p for p in self.products
             if p.version != product.version or p.name != product.name
@@ -631,7 +642,9 @@ class DeleteProductComponent(ProductCatalog):
         product = self.get_product(self.pname, self.pversion)
         hosted_repos_to_remove = product.hosted_repositories
         print(f'Hosted repositories to remove are - {hosted_repos_to_remove}')
-
+        if not hosted_repos_to_remove:
+            print(f"No hosted repos found in the configmap data for {self.pname}:{self.pversion}")
+            return
         other_products = [
             p for p in self.products
             if p.version != product.version or p.name != product.name
