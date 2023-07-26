@@ -188,7 +188,7 @@ class TestUninstallComponents(unittest.TestCase):
         mock_s3_cmd = 'cmd_s3'
         mock_ims_cmd = 'cmd_ims'
 
-        self.mock_UninstallComponents.uninstall_ims_images(''image1', 'image_id1')
+        self.mock_UninstallComponents.uninstall_ims_images('image1', 'image_id1')
 
         self.mock_subprocess.check_output.assert_called_once_with('cmd1')
         self.mock_subprocess.check_output.assert_called_once_with('cmd_s3')
