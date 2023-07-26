@@ -32,7 +32,8 @@ set -ex
 #update-ca-certificates 2>/dev/null
 env
 #export REQUESTS_CA_BUNDLE=/etc/ssl/ca-bundle.pem
-export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+#export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+export REQUESTS_CA_BUNDLE=/opt/venv/lib64/python3.6/site-packages/certifi/cacert.pem
 env
 update-ca-certificates -v
 product-deletion-utility "$@"
