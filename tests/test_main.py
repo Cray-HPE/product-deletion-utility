@@ -57,7 +57,7 @@ class TestUninstallComponents(unittest.TestCase):
         self.mock_UninstallComponents= patch('product_deletion_utility.components.delete.UninstallComponents').start()
         self.mock_docker_api= patch('nexusctl.DockerApi').start()
         self.mock_docker_api.list_repos=Mock()
-        
+        self.TestUninstallComponents.mock_UninstallComponents=self.mock_UninstallComponents
 	      
     def tearDown(self):
         """Stop patches."""
