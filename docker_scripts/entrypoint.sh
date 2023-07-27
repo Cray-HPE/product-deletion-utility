@@ -38,10 +38,7 @@ set -ex
 #export REQUESTS_CA_BUNDLE=/etc/pki/trust/anchors/ca-bundle.pem
 #cp /etc/ssl/ca-bundle.pem /etc/pki/trust/anchors/
 #export REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/platform-ca-certs.crt
-
-env
-ls /etc/pki/trust/anchors/
-ls -al /var/lib/ca-certificates/
+pip install certifi --upgrade
 #chown nobody:nobody /var/lib/ca-certificates/
 #su nobody -g nobody
 # export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
