@@ -40,7 +40,6 @@ set -ex
 #export REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/platform-ca-certs.crt
 
 env
-ls /usr/local/share/ca-certificates/
 ls /etc/pki/trust/anchors/
 ls -al /var/lib/ca-certificates/
 #chown nobody:nobody /var/lib/ca-certificates/
