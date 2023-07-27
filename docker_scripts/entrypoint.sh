@@ -47,5 +47,6 @@ ls -al /var/lib/ca-certificates/
 #su nobody -g nobody
 export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
 env
+export SSL_CERT_DIR=/var/lib/ca-certificates/
 #update-ca-certificates -v
 product-deletion-utility "$@"
