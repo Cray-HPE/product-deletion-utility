@@ -45,11 +45,12 @@ ARG PIP_EXTRA_INDEX_URL="https://arti.hpc.amslabs.hpecorp.net/artifactory/intern
     https://artifactory.algol60.net/artifactory/csm-python-modules/simple/ \
     https://artifactory.algol60.net/artifactory/csm-python-modules/unstable"
 
+#wget https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp4/craycli/x86_64/craycli-0.82.8-1.x86_64.rpm && \
 # RUN does not support ENVs, so specify INSTALLDIR explicitly.
 RUN --mount=type=secret,id=netrc,target=/root/.netrc \
     apk update && apk add --no-cache python3 git bash build-base python3-dev curl rpm && \
     rpm --version && \
-    wget https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp4/craycli/x86_64/craycli-0.82.8-1.x86_64.rpm && \
+    wget https://arti.hpc.amslabs.hpecorp.net/artifactory/csm-rpms-remote/hpe/stable/sle-15sp4/craycli/x86_64/craycli-0.82.8-1.x86_64.rpm && \
     ls && \
     python3 -m venv $VIRTUAL_ENV && \
     pip install --no-cache-dir -U pip && \
