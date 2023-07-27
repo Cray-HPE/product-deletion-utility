@@ -24,7 +24,7 @@
 # Dockerfile for product_deletion_utility
 
 #FROM artifactory.algol60.net/csm-docker/stable/docker.io/opensuse/leap:15.4
-FROM opensuse/leap:15.3
+FROM opensuse/leap:15.5
 
 ENV VIRTUAL_ENV=/opt/venv
 ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
