@@ -79,7 +79,7 @@ class TestUninstallComponents(unittest.TestCase):
     def test_uninstall_docker_image(self):
 	
         self.mock_UninstallComponents.uninstall_docker_image('image1', 'version1', self.mock_UninstallComponents.mock_docker_api)
-        self.mock_UninstallComponents.mock_docker_api.delete_image.assert_called_once_with('image1', 'version1')
+        self.mock_UninstallComponents.mock_docker_api.delete_image.assert_called_once_with('image1', 'version1',self.mock_UninstallComponents.mock_docker_api )
 			
     def test_uninstall_docker_image_err(self):
 	
@@ -89,7 +89,7 @@ class TestUninstallComponents(unittest.TestCase):
         with self.assertRaises(ProductInstallException):
             self.mock_UninstallComponents.uninstall_docker_image('image1', 'version1', self.mock_UninstallComponents.mock_docker_api)
 		
-        self.mock_UninstallComponents.mock_docker_api.delete_image.assert_called_once_with('image1', 'version1')
+        self.mock_UninstallComponents.mock_docker_api.delete_image.assert_called_once_with('image1', 'version1', self.mock_UninstallComponents.mock_docker_api)
 		
         self.mock_print.assert_called_once_with(
             "Failed to remove image image1:version1: Error occured")
@@ -198,7 +198,7 @@ class TestUninstallComponents(unittest.TestCase):
 
     def test_uninstall_ims_images_err(self):
 
-        self.mock_UninstallComponents.mock_suprocess.check_output.side_effect = ProductInstallException(
+        self.mock_UninstallComponents.mock_subprocess.check_output.side_effect = ProductInstallException(
          "Error occurred" )
 
         with self.assertRaises(ProductInstallException) as context:
