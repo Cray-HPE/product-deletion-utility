@@ -54,7 +54,8 @@ RUN --mount=type=secret,id=netrc,target=/root/.netrc --mount=type=secret,id=ARTI
     SLES_REPO_PASSWORD=$(cat /run/secrets/ARTIFACTORY_READONLY_TOKEN) && \
     wget https://${SLES_REPO_USERNAME:-}${SLES_REPO_PASSWORD+:}${SLES_REPO_PASSWORD}@artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp4/craycli/x86_64/craycli-0.82.8-1.x86_64.rpm && \
     rpm2cpio craycli-0.82.8-1.x86_64.rpm | cpio -idmv && \
-    chmod +x ./usr/bin/cray && cp ./usr/bin/cray /usr/local/bin/cray && \
+    ./usr/bin/cray --version && \
+    chmod +x ./usr/bin/cray && cp ./usr/bin/cray /bin/cray && \
     cray --version  && \
     #rpm -i craycli-0.82.8-1.x86_64.rpm && \
     python3 -m venv $VIRTUAL_ENV && \
