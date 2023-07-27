@@ -29,6 +29,7 @@ from argparse import Namespace
 import unittest
 from unittest.mock import call, Mock, patch
 from nexusctl import DockerApi
+import PyTest
 
 from product_deletion_utility.main import (
     main,
