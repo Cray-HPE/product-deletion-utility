@@ -56,7 +56,7 @@ class TestUninstallComponents(unittest.TestCase):
     def setUp(self):
         """Set up mocks"""
         self.mock_UninstallComponents= UninstallComponents()
-        self.mock_UninstallComponents.mock_docker_api= Mock()
+        self.mock_docker_api= Mock()
         self.mock_UninstallComponents.mock_nexus_api= Mock()
         self.mock_UninstallComponents.uninstall_docker_image= Mock()
         self.mock_UninstallComponents.uninstall_s3_artifacts= Mock()
