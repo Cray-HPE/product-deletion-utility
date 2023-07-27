@@ -43,7 +43,6 @@ curl -k -s -d grant_type=client_credentials \
         -d client_secret=$ADMIN_SECRET https://api-gw-service-nmn.local/keycloak/realms/shasta/protocol/openid-connect/token > /tmp/setup-token.json
 export CRAY_CREDENTIALS=/tmp/setup-token.json
 cray init --hostname $API_GW --no-auth --overwrite > /dev/null
-cray artifacts list config-data
 
 update-ca-certificates -v
 product-deletion-utility "$@"
