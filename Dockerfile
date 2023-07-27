@@ -52,7 +52,8 @@ RUN --mount=type=secret,id=netrc,target=/root/.netrc --mount=type=secret,id=ARTI
     rpm --version && \
     SLES_REPO_USERNAME=$(cat /run/secrets/ARTIFACTORY_READONLY_USER) && \
     SLES_REPO_PASSWORD=$(cat /run/secrets/ARTIFACTORY_READONLY_TOKEN) && \
-    echo ${SLES_REPO_PASSWORD}
+    echo ${SLES_REPO_USERNAME} && \
+    echo ${SLES_REPO_PASSWORD} && \
     wget https://${SLES_REPO_USERNAME:-}${SLES_REPO_PASSWORD+:}${SLES_REPO_PASSWORD}@artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp4/craycli/x86_64/craycli-0.82.8-1.x86_64.rpm && \
     #wget https://arti.hpc.amslabs.hpecorp.net/artifactory/csm-rpms-remote/hpe/stable/sle-15sp4/craycli/x86_64/craycli-0.82.8-1.x86_64.rpm && \
     rpm -i craycli-0.82.8-1.x86_64.rpm && \
