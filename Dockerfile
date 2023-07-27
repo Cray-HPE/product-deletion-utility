@@ -52,15 +52,15 @@ RUN --mount=type=secret,id=netrc,target=/root/.netrc --mount=type=secret,id=ARTI
     #rpm --version && \
     SLES_REPO_USERNAME=$(cat /run/secrets/ARTIFACTORY_READONLY_USER) && \
     SLES_REPO_PASSWORD=$(cat /run/secrets/ARTIFACTORY_READONLY_TOKEN) && \
-    mkdir extract && \
+    #mkdir extract && \
     wget https://${SLES_REPO_USERNAME:-}${SLES_REPO_PASSWORD+:}${SLES_REPO_PASSWORD}@artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp4/craycli/x86_64/craycli-0.82.8-1.x86_64.rpm && \
-    rpm2cpio craycli-0.82.8-1.x86_64.rpm | cpio -p extract\ -idmv && \
-    ls && \
-    ls extract && \
-    extract/usr/bin/cray --version && \
+    #rpm2cpio craycli-0.82.8-1.x86_64.rpm | cpio -p extract\ -idmv && \
+    #ls && \
+    #ls extract && \
+    #extract/usr/bin/cray --version && \
     #./usr/bin/cray --version && \
-    chmod +x ./extract/usr/bin/cray && cp ./extract/usr/bin/cray /bin/cray && \
-    cray --version  && \
+    #chmod +x ./extract/usr/bin/cray && cp ./extract/usr/bin/cray /bin/cray && \
+    #cray --version  && \
     #rpm -i craycli-0.82.8-1.x86_64.rpm && \
     python3 -m venv $VIRTUAL_ENV && \
     pip install --no-cache-dir -U pip && \
@@ -73,4 +73,4 @@ RUN --mount=type=secret,id=netrc,target=/root/.netrc --mount=type=secret,id=ARTI
     curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && \
     chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
 
-ENTRYPOINT ["/entrypoint.sh"]
+#ENTRYPOINT ["/entrypoint.sh"]
