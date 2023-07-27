@@ -53,11 +53,11 @@ from product_deletion_utility.components.constants import (
 class TestUninstallComponents(unittest.TestCase):
     """Tests for UninstallComponents."""
 
-    def setup(self):
+    def setUp(self):
         """Set up mocks"""
-        self.mock_UninstallComponents= patch('product_deletion_utility.components.delete.UninstallComponents').start()
-        self.mock_docker_api= Mock()
-        self.mock_nexus_api= Mock()
+        self.mock_UninstallComponents= UninstallComponents()
+        self.mock_UninstallComponents.mock_docker_api= Mock()
+        self.mock_UninstallComponents.mock_nexus_api= Mock()
         self.mock_UninstallComponents.uninstall_docker_image= Mock()
         self.mock_UninstallComponents.uninstall_s3_artifacts= Mock()
         self.mock_UninstallComponents.uninstall_hosted_repos= Mock()
@@ -207,7 +207,7 @@ class TestUninstallComponents(unittest.TestCase):
 
 class TestDeleteProductComponent(unittest.TestCase):
 
-    def setup(self):
+    def setUp(self):
         """Set up mocks"""
         self.mock_delete_product_component= DeleteProductComponent()
         self.mock_delete_product_component.get_product= Mock()
