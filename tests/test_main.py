@@ -112,7 +112,7 @@ class TestUninstallComponents(unittest.TestCase):
 		
     def test_uninstall_hosted_repos(self):
 
-        self.mock_UninstallComponents.uninstall_hosted_repos('repo1', self.mock_nexus_api)
+        self.mock_UninstallComponents.uninstall_hosted_repos('repo1', self.mock_UninstallComponents.mock_nexus_api)
         self.mock_UninstallComponents.mock_nexus_api.repos.delete.assert_called_once_with('repo1')
 	
     def test_uninstall_hosted_repos_err(self):
@@ -121,13 +121,13 @@ class TestUninstallComponents(unittest.TestCase):
         "Error occurred" )
 	
         with self.assertRaises(ProductInstallException):
-            self.mock_UninstallComponents.uninstall_hosted_repos('repo1', self.mock_nexus_api)
+            self.mock_UninstallComponents.uninstall_hosted_repos('repo1', self.mock_UninstallComponents.mock_nexus_api)
 	
         self.mock_print.assert_called_once_with("Failed to remove repository repo1")
 		
     def test_uninstall_helm_charts(self):
 	
-        self.mock_UninstallComponents.uninstall_helm_charts('chart1', 'version1', 'nexus_id', mock_nexus_api)
+        self.mock_UninstallComponents.uninstall_helm_charts('chart1', 'version1', 'nexus_id', self.mock_UninstallComponents.mock_nexus_api)
         self.mock_UninstallComponents.mock_nexus_api.components.delete.assert_called_once_with('nexus_id')
 	
     def test_uninstall_helm_charts_err(self):
@@ -136,7 +136,7 @@ class TestUninstallComponents(unittest.TestCase):
         "Error occurred" )
 	   
         with self.assertRaises(ProductInstallException):
-            self.mock_UninstallComponents.uninstall_helm_charts('chart1', 'version1', 'nexus_id', mock_nexus_api)
+            self.mock_UninstallComponents.uninstall_helm_charts('chart1', 'version1', 'nexus_id', self.mock_UninstallComponents.mock_nexus_api)
 	
         self.mock_print.assert_called_once_with("Failed to remove helm chart chart1 ")
 	
