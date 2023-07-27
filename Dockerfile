@@ -50,12 +50,13 @@ ARG PIP_EXTRA_INDEX_URL="https://arti.hpc.amslabs.hpecorp.net/artifactory/intern
 RUN --mount=type=secret,id=netrc,target=/root/.netrc \
     apk update && apk add --no-cache python3 git bash build-base python3-dev curl rpm && \
     rpm --version && \
-    wget https://arti.hpc.amslabs.hpecorp.net/artifactory/csm-rpms-remote/hpe/stable/sle-15sp4/craycli/x86_64/craycli-0.82.8-1.x86_64.rpm && \
-    ls && \
+    wget https://${ARTIFACTORY_READONLY_USER:-}${ARTIFACTORY_READONLY_TOKEN+:}${ARTIFACTORY_READONLY_TOKEN}@artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp4/craycli/x86_64/craycli-0.82.8-1.x86_64.rpm && \
+    #wget https://arti.hpc.amslabs.hpecorp.net/artifactory/csm-rpms-remote/hpe/stable/sle-15sp4/craycli/x86_64/craycli-0.82.8-1.x86_64.rpm && \
+    rpm -i craycli-0.82.8-1.x86_64.rpm && \
     python3 -m venv $VIRTUAL_ENV && \
     pip install --no-cache-dir -U pip && \
-    git clone https://github.com/Cray-HPE/craycli.git && \
-    python3 -m pip install craycli/ && \
+    #git clone https://github.com/Cray-HPE/craycli.git && \
+    #python3 -m pip install craycli/ && \
     cray --version  && \
     rm -rf craycli/ && \    
     pip install --no-cache-dir /deletion/ && \
