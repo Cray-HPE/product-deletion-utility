@@ -65,6 +65,7 @@ class TestUninstallComponents(unittest.TestCase):
         self.mock_UninstallComponents.uninstall_loftsman_manifests= Mock()
         self.mock_UninstallComponents.uninstall_ims_recipies= Mock()
         self.mock_UninstallComponents.uninstall_ims_images= Mock()
+	self.mock_UninstallComponents.mock_subprocess= Mock()
         self.mock_UninstallComponents.mock_docker_api.delete_image= Mock()
         self.mock_UninstallComponents.mock_subprocess.checkoutput= Mock()
         self.mock_UninstallComponents.mock_nexus_api.repos.delete= Mock()
