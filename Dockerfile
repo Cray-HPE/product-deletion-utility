@@ -55,6 +55,9 @@ RUN --mount=type=secret,id=netrc,target=/root/.netrc \
     cray --version  && \
     rm -rf craycli/ && \    
     pip install --no-cache-dir /deletion/ && \
-    rm -rf /deletion/
+    rm -rf /deletion/ && \
+    # install kubectl
+    curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
 
 ENTRYPOINT ["/entrypoint.sh"]

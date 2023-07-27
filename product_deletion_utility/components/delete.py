@@ -128,7 +128,9 @@ class UninstallComponents():
             ProductInstallException: If an error occurred removing a repository.
         """
         try:
-            nexus_api.repos.list(hosted_repo_name)
+            print(f'hosted repo name is {hosted_repo_name}')
+            repo_list=nexus_api.repos.list(hosted_repo_name)
+            print(f'repos list is {repo_list}')
             #nexus_api.repos.delete(hosted_repo_name)
             print(f'Repository {hosted_repo_name} has been removed')
         except HTTPError as err:
@@ -330,9 +332,9 @@ class DeleteProductComponent(ProductCatalog):
         self.nexus_api = NexusApi(NexusClient(nexus_url))
 
 
-        repo_list = self.docker_api.list_repos()
-        print(f'Listing all repos')
-        print(f'{repo_list}')
+        #repo_list = self.docker_api.list_repos()
+        #print(f'Listing all repos')
+        #print(f'{repo_list}')
 
 
 
@@ -652,12 +654,12 @@ class DeleteProductComponent(ProductCatalog):
 
         errors = False
         # For each hosted repo to remove, check if it is shared by any other products.
-        for hosted_repo_name in hosted_repos_to_remove:
+        for hosted_repo_name, hosted_repo_type in hosted_repos_to_remove:
             other_products_with_same_hosted_repo = [
                 other_product for other_product in other_products
                 if any([
-                    other_hosted_repo_name == hosted_repo_name
-                    for other_hosted_repo_name in other_product.hosted_repositories
+                    other_hosted_repo_name == hosted_repo_name and other_hosted_repo_type == hosted_repo_type
+                    for other_hosted_repo_name, other_hosted_repo_type in other_product.hosted_repositories
                 ])
             ]
             if other_products_with_same_hosted_repo:
@@ -700,8 +702,8 @@ class DeleteProductComponent(ProductCatalog):
         })
         try:
             subprocess.check_output(['catalog_delete'])
-            print(f'Deleted {self.name}-{self.version} from product catalog')
+            print(f'Deleted {self.pname}-{self.pversion} from product catalog')
         except subprocess.CalledProcessError as err:
             raise ProductInstallException(
-                f'Error removing {self.name}-{self.version} from product catalog: {err}'
+                f'Error removing {self.pname}-{self.pversion} from product catalog: {err}'
             )
