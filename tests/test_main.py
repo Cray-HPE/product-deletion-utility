@@ -50,6 +50,49 @@ from product_deletion_utility.components.constants import (
     PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE
 )
 
+class TestDelete(unittest.TestCase):
+    """Tests for delete()."""
+    def setUp(self):
+        self.mock_product_catalog_cls = patch('product_deletion_utility.main.DeleteProductComponent').start()
+        self.mock_product_catalog = self.mock_product_catalog_cls.return_value
+
+
+    def tearDown(self):
+        """Stop patches."""
+        patch.stopall()
+
+    def test_delete_success(self):
+        """Test the successful case for uninstall()."""
+        delete(Namespace(
+            catalogname='mock_name',
+            catalognamespace='mock_namespace',
+            productname='mock_product',
+            productversion='mock_version',
+            nexus_url='mock_nexus_url',
+            docker_url='mock_docker_url',
+            nexus_credentials_secret_name='mock_nexus_secret',
+            nexus_credentials_secret_namespace='mock_nexus_secret_namespace'
+        ))
+        self.mock_product_catalog_cls.assert_called_once_with(
+            catalogname='mock_name',
+            catalognamespace='mock_namespace',
+            productname='mock_product',
+            productversion='mock_version',
+            nexus_url='mock_nexus_url',
+            docker_url='mock_docker_url',
+            nexus_credentials_secret_name='mock_nexus_secret',
+            nexus_credentials_secret_namespace='mock_nexus_secret_namespace'
+        )
+        self.mock_product_catalog.remove_product_docker_images.assert_called_once()
+        self.mock_product_catalog.remove_product_S3_artifacts.assert_called_once()
+        self.mock_product_catalog.remove_product_helm_charts.assert_called_once()
+        self.mock_product_catalog.remove_product_loftsman_manifests.assert_called_once()
+        self.mock_product_catalog.remove_ims_recipes.assert_called_once()
+        self.mock_product_catalog.remove_ims_images.assert_called_once()
+        self.mock_product_catalog.uninstall_product_hosted_repos.assert_called_once()
+        self.mock_product_catalog.remove_product_entry.assert_called_once()
+
+
 class TestDeleteProductComponent(unittest.TestCase):
 
     def setUp(self):
