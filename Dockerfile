@@ -48,7 +48,7 @@ ARG PIP_EXTRA_INDEX_URL="https://arti.hpc.amslabs.hpecorp.net/artifactory/intern
 #wget https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp4/craycli/x86_64/craycli-0.82.8-1.x86_64.rpm && \
 # RUN does not support ENVs, so specify INSTALLDIR explicitly.
 RUN --mount=type=secret,id=netrc,target=/root/.netrc --mount=type=secret,id=ARTIFACTORY_READONLY_USER --mount=type=secret,id=ARTIFACTORY_READONLY_TOKEN \
-    apk update && apk add --no-cache python3 git bash build-base python3-dev curl rpm2cpio libc6-compat && \
+    apk update && apk add --no-cache python3 git bash build-base python3-dev curl rpm2cpio gcompat && \
     #rpm --version && \
     SLES_REPO_USERNAME=$(cat /run/secrets/ARTIFACTORY_READONLY_USER) && \
     SLES_REPO_PASSWORD=$(cat /run/secrets/ARTIFACTORY_READONLY_TOKEN) && \
