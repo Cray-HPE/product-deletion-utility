@@ -104,7 +104,7 @@ class TestDelete(unittest.TestCase):
 class TestUninstallComponents(unittest.TestCase):
     """Tests for UninstallComponents."""
 
-    def setup(self):
+    def setUp(self):
         """Set up mocks"""
         self.mock_docker_api=Mock()
         self.mock_nexus_api=Mock()
@@ -141,7 +141,7 @@ class TestUninstallComponents(unittest.TestCase):
 
 class TestDeleteProductComponent(unittest.TestCase):
 
-    def setup(self):
+    def setUp(self):
         """Set up mocks"""
         self.mock_delete_product_component= DeleteProductComponent()
         self.mock_delete_product_component.get_product= Mock()
