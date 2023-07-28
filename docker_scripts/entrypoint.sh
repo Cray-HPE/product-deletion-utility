@@ -22,13 +22,13 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-set -e
+set -ex
 #
 # update-ca-certficates reads from /usr/local/share/ca-certificates
 # and updates /etc/ssl/certs/ca-certificates.crt
 # REQUESTS_CA_BUNDLE is used by python
 export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
-update-ca-certificates 2>/dev/null
+update-ca-certificates --fresh 2>/dev/null
 
 # initialize craycli
 API_GW="https://api-gw-service-nmn.local"
