@@ -551,13 +551,15 @@ class DeleteProductComponent(ProductCatalog):
         ]
 
         errors = False
-        # For each image to remove, check if it is shared by any other products.
-        for recipe_name, recipe_id in ims_recipes_to_remove:
+        # For each recipe to remove, check if it is shared by any other products.
+        for recipe in ims_recipes_to_remove:
+            recipe_name=recipe['name']
+            recipe_id=recipe['id']
             other_products_with_same_recipe = [
                 other_product for other_product in other_products
                 if any([
-                    other_recipe_name == recipe_name and other_recipe_id == recipe_id
-                    for other_recipe_name, other_recipe_id in other_product.recipes
+                    other_recipe['name'] == recipe_name and other_recipe['id'] == recipe_id
+                    for other_recipe in other_product.recipes
                 ])
             ]
             if other_products_with_same_recipe:
@@ -603,12 +605,14 @@ class DeleteProductComponent(ProductCatalog):
 
         errors = False
         # For each image to remove, check if it is shared by any other products.
-        for image_name, image_id in ims_images_to_remove:
+        for image in ims_images_to_remove:
+            image_name = image['name']
+            image_id = image['id']
             other_products_with_same_image = [
                 other_product for other_product in other_products
                 if any([
-                    other_image_name == image_name and other_image_id == image_id
-                    for other_image_name, other_image_id in other_product.images
+                    other_image['name'] == image_name and other_image['id'] == image_id
+                    for other_image in other_product.images
                 ])
             ]
             if other_products_with_same_image:
@@ -654,12 +658,14 @@ class DeleteProductComponent(ProductCatalog):
 
         errors = False
         # For each hosted repo to remove, check if it is shared by any other products.
-        for hosted_repo_name, hosted_repo_type in hosted_repos_to_remove:
+        for hosted_repo in hosted_repos_to_remove:
+            hosted_repo_name = hosted_repo['name']
+            hosted_repo_type = hosted_repo['type']
             other_products_with_same_hosted_repo = [
                 other_product for other_product in other_products
                 if any([
-                    other_hosted_repo_name == hosted_repo_name and other_hosted_repo_type == hosted_repo_type
-                    for other_hosted_repo_name, other_hosted_repo_type in other_product.hosted_repositories
+                    other_hosted_repo['name'] == hosted_repo_name and other_hosted_repo['type'] == hosted_repo_type
+                    for other_hosted_repo in other_product.hosted_repositories
                 ])
             ]
             if other_products_with_same_hosted_repo:
