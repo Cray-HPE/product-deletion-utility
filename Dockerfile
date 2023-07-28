@@ -56,7 +56,7 @@ RUN --mount=type=secret,id=netrc,target=/root/.netrc --mount=type=secret,id=ARTI
         do curl -sSL ${GLIBC_REPO}/releases/download/${GLIBC_VERSION}/${pkg}.apk -o /tmp/${pkg}.apk; done && \
     apk add --allow-untrusted /tmp/*.apk && \
     rm -v /tmp/*.apk && \
-    /usr/glibc-compat/sbin/ldconfig /lib /usr/glibc-compat/lib
+    /usr/glibc-compat/sbin/ldconfig /lib /usr/glibc-compat/lib && \
     #rpm --version && \
     SLES_REPO_USERNAME=$(cat /run/secrets/ARTIFACTORY_READONLY_USER) && \
     SLES_REPO_PASSWORD=$(cat /run/secrets/ARTIFACTORY_READONLY_TOKEN) && \
