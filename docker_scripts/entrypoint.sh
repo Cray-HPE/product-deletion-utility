@@ -22,18 +22,13 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-set -ex
+set -e
 #
 # update-ca-certficates reads from /usr/local/share/ca-certificates
 # and updates /etc/ssl/certs/ca-certificates.crt
 # REQUESTS_CA_BUNDLE is used by python
-#
-#export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
-#update-ca-certificates 2>/dev/null
-env
-#export REQUESTS_CA_BUNDLE=/etc/ssl/ca-bundle.pem
 export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
-env
+update-ca-certificates 2>/dev/null
 
 # initialize craycli
 API_GW="https://api-gw-service-nmn.local"
@@ -44,5 +39,4 @@ curl -k -s -d grant_type=client_credentials \
 export CRAY_CREDENTIALS=/tmp/setup-token.json
 cray init --hostname $API_GW --no-auth --overwrite > /dev/null
 
-update-ca-certificates -v
 product-deletion-utility "$@"
