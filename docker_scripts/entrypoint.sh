@@ -39,8 +39,9 @@ set -ex
 #cp /etc/ssl/ca-bundle.pem /etc/pki/trust/anchors/
 #export REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/platform-ca-certs.crt
 # pip install certifi --upgrade
-cd "/Applications/Python 3.6/"
-sudo "./Install Certificates.command"
+mkdir -p /Library/Frameworks/Python.framework/Versions/3.6/etc/openssl
+cp -a /opt/venv/lib64/python3.6/site-packages/certifi/cacert.pem \
+  /Library/Frameworks/Python.framework/Versions/3.6/etc/openssl/cert.pem
 export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
 # env
 export SSL_CERT_DIR=/var/lib/ca-certificates/
