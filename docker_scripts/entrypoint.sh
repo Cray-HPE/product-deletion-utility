@@ -42,8 +42,8 @@ set -ex
 mkdir -p /Library/Frameworks/Python.framework/Versions/3.6/etc/openssl
 cp -a /opt/venv/lib64/python3.6/site-packages/certifi/cacert.pem \
   /Library/Frameworks/Python.framework/Versions/3.6/etc/openssl/cert.pem
-export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
+# export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
 # env
-export SSL_CERT_DIR=/var/lib/ca-certificates/
+# export SSL_CERT_DIR=/var/lib/ca-certificates/
 #update-ca-certificates -v
 product-deletion-utility "$@"
