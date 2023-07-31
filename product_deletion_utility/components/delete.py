@@ -128,7 +128,7 @@ class UninstallComponents():
             ProductInstallException: If an error occurred removing a repository.
         """
         try:
-            nexus_api.repos.list(hosted_repo_name)
+            #nexus_api.repos.list(hosted_repo_name)
             nexus_api.repos.delete(hosted_repo_name)
             print(f'Repository {hosted_repo_name} has been removed')
         except HTTPError as err:
