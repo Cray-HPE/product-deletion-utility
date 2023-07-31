@@ -22,7 +22,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-set -ex
+set -e
 #
 # update-ca-certficates reads from /usr/local/share/ca-certificates
 # and updates /etc/ssl/certs/ca-certificates.crt

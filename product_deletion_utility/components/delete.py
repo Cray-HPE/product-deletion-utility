@@ -108,8 +108,8 @@ class UninstallComponents():
         try:
             output = subprocess.check_output(
                 #["cray", "artifacts", "list", "boot-images"], universal_newlines=True)
-                ["cray", "artifacts", "delete", {s3_bucket}, {s3_key}], universal_newlines=True)
-            print(f'Output of cray artifacts list is {output}')
+                ["cray", "artifacts", "delete", "%s" % s3_bucket, "%s" % s3_key], universal_newlines=True)
+            print(f'Output of cray artifacts delete is {output}')
         except subprocess.CalledProcessError as err:
             raise ProductInstallException(
                 f'Failed to remove S3 artifacts {s3_artifact_short_name} with error: {err}'
@@ -182,10 +182,11 @@ class UninstallComponents():
         """
         try:
             for manifest_key in manifest_keys:
+                print(f'Removing the following manifest - {manifest_key}')
                 output = subprocess.check_output(
                     #["cray", "artifacts", "list", "config-data"], universal_newlines=True)
-                    ["cray", "artifacts", "delete", "config-data", {manifest_key}], universal_newlines=True)
-                print(f'Output of cray artifacts list is {output}')
+                    ["cray", "artifacts", "delete", "config-data", "%s" % manifest_key], universal_newlines=True)
+                print(f'Output of cray artifacts delete is {output}')
         except subprocess.CalledProcessError as err:
             raise ProductInstallException(
                 f'Failed to remove loftsman manifest {manifest_key} from S3 with error: {err}'
@@ -204,7 +205,7 @@ class UninstallComponents():
             print(f'Recipe ID and name from CPC are {recipe_id}, {recipe_name}')
             command = "cray artifacts list ims --format json | jq -r '.artifacts[] | select(.Key|test(\"^.*{}.*$\")) | .Key'".format(recipe_id)
             recipe_s3_key = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
-            print(f'Output of cray artifacts list is {recipe_s3_key}')
+            print(f'Recipe S3 key is: {recipe_s3_key}')
             if not recipe_s3_key:
                 print(f'S3 key could not be retrieved for recipe ID - {recipe_id}')
 
@@ -237,7 +238,7 @@ class UninstallComponents():
             print(f'Image ID and name from CPC are {image_id}, {image_name}')
             command = "cray artifacts list boot-images --format json | jq -r '.artifacts[] | select(.Key|test(\"^.*{}.*$\")) | .Key'".format(image_id)
             image_s3_keys = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
-            print(f'Output of cray artifacts list is {image_s3_keys}')
+            print(f'Image S3 key is {image_s3_keys}')
             if not image_s3_keys:
                 print(f'S3 key could not be retrieved for image ID - {image_id}')
 
@@ -381,6 +382,7 @@ class DeleteProductComponent(ProductCatalog):
                       f'{", ".join(str(p) for p in other_products_with_same_docker_image)}')
             else:
                 try:
+                    print(f'Removing the following docker image - {image_name}:{image_version}')
                     self.uninstall_component.uninstall_docker_image(
                         image_name, image_version, self.docker_api)
                 except ProductInstallException as err:
@@ -432,10 +434,10 @@ class DeleteProductComponent(ProductCatalog):
                       f'{", ".join(str(p) for p in other_products_with_same_artifact_key)}')
             else:
                 try:
+                    print(
+                        f'Removing the following artifact - {artifact_bucket}:{artifact_key}')
                     self.uninstall_component.uninstall_S3_artifact(
                         artifact_bucket, artifact_key)
-                    print(
-                        f'Will be removing the following artifact - {artifact_bucket}:{artifact_key}')
                 except ProductInstallException as err:
                     print(
                         f'Failed to remove {artifact_bucket}:{artifact_bucket}: {err}')
@@ -494,7 +496,7 @@ class DeleteProductComponent(ProductCatalog):
                     for component in nexus_charts.components:
                         if component.name == chart_name and component.version == chart_version:
                             print(
-                                f'Will be removing the following chart - {chart_name}:{chart_version}')
+                                f'Removing the following chart - {chart_name}:{chart_version}')
                             self.uninstall_component.uninstall_helm_charts(
                                 chart_name, chart_version, self.nexus_api, component.id)
                 except ProductInstallException as err:
@@ -568,10 +570,10 @@ class DeleteProductComponent(ProductCatalog):
                       f'{", ".join(str(p) for p in other_products_with_same_recipe)}')
             else:
                 try:
+                    print(
+                        f'Removing the following IMS recipe - {recipe_name}:{recipe_id}')
                     self.uninstall_component.uninstall_ims_recipes(
                         recipe_name, recipe_id)
-                    print(
-                        f'Will be removing the following IMS recipe - {recipe_name}:{recipe_id}')
                 except ProductInstallException as err:
                     print(
                         f'Failed to remove {recipe_name}:{recipe_id}: {err}')
@@ -621,10 +623,10 @@ class DeleteProductComponent(ProductCatalog):
                       f'{", ".join(str(p) for p in other_products_with_same_image)}')
             else:
                 try:
+                    print(
+                        f'Removing the following IMS image - {image_name}:{image_id}')
                     self.uninstall_component.uninstall_ims_images(
                         image_name, image_id)
-                    print(
-                        f'Will be removing the following IMS image - {image_name}:{image_id}')
                 except ProductInstallException as err:
                     print(
                         f'Failed to remove {image_name}:{image_id}: {err}')
@@ -674,10 +676,9 @@ class DeleteProductComponent(ProductCatalog):
                       f'{", ".join(str(p) for p in other_products_with_same_hosted_repo)}')
             else:
                 try:
+                    print(f'Removing the following hosted repo - {hosted_repo_name}')
                     self.uninstall_component.uninstall_hosted_repos(
                         hosted_repo_name, self.nexus_api)
-                    print(
-                        f'Will be removing the following hosted repo - {hosted_repo_name}')
                 except ProductInstallException as err:
                     print(
                         f'Failed to remove {hosted_repo_name} : {err}')
