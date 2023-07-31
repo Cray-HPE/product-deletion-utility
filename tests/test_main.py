@@ -191,6 +191,7 @@ class TestUninstallComponents(unittest.TestCase):
 
         with self.assertRaises(ProductInstallException) as context:
             self.mock_UninstallComponents.uninstall_ims_recipies('recipe1', 'recipe_id1')
+            self.mock_UninstallComponents.mock_subprocess.check_output('cmd', shell=True, stderr=self.mock_UninstallComponents.mock_subprocess.STDOUT, universal_newlines=True)
 	
         #self.mock_print.assert_called_once_with("Failed to remove IMS recipe 'recipe1' ")
 
@@ -220,7 +221,7 @@ class TestUninstallComponents(unittest.TestCase):
 
         with self.assertRaises(ProductInstallException) as context:
             self.mock_UninstallComponents.uninstall_ims_recipies('image1', 'image_id1')
-            self.mock_UninstallComponents.mock_subprocess.check_output(mock_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+            self.mock_UninstallComponents.mock_subprocess.check_output(mock_command, shell=True, stderr=self.mock_UninstallComponents.mock_subprocess.STDOUT, universal_newlines=True)
 		
         #self.mock_print.assert_called_once_with("Failed to remove IMS image image1")
 '''
