@@ -26,15 +26,19 @@ Unit tests for the product_deletion_utility.main module.
 """
 
 from argparse import Namespace
+import copy
 import unittest
-from unittest.mock import patch
-
+from unittest.mock import call, Mock, patch
+from nexusctl import DockerApi
 
 from product_deletion_utility.main import (
     main,
     delete
 )
-from product_deletion_utility.components.delete import ProductInstallException
+from product_deletion_utility.components.delete import (
+     UninstallComponents,
+     DeleteProductComponent,ProductInstallException
+)
 from product_deletion_utility.components.constants import (
     DEFAULT_DOCKER_URL,
     DEFAULT_NEXUS_URL,
@@ -47,7 +51,7 @@ from product_deletion_utility.components.constants import (
 class TestDelete(unittest.TestCase):
     """Tests for delete()."""
     def setUp(self):
-        self.mock_delete_product_catalog_cls = patch('product_deletion_utility.components.delete').start()
+        self.mock_delete_product_catalog_cls = patch('product_deletion_utility.main.DeleteProductComponent').start()
         self.mock_delete_product_catalog = self.mock_delete_product_catalog_cls.return_value
 
         self.mock_delete_product = self.mock_delete_product_catalog.get_product.return_value
