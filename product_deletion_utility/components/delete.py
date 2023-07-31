@@ -107,8 +107,8 @@ class UninstallComponents():
         s3_artifact_short_name = f'{s3_bucket}:{s3_key}'
         try:
             output = subprocess.check_output(
-                ["cray", "artifacts", "list", "boot-images"], universal_newlines=True)
-                #["cray", "artifacts", "delete", {s3_bucket}, {s3_key}], universal_newlines=True)
+                # ["cray", "artifacts", "list", "boot-images"], universal_newlines=True)
+                ["cray", "artifacts", "delete", {s3_bucket}, {s3_key}], universal_newlines=True)
             print(f'Output of cray artifacts list is {output}')
         except subprocess.CalledProcessError as err:
             raise ProductInstallException(
@@ -181,8 +181,8 @@ class UninstallComponents():
         try:
             for manifest_key in manifest_keys:
                 output = subprocess.check_output(
-                    ["cray", "artifacts", "list", "config-data"], universal_newlines=True)
-                    #["cray", "artifacts", "delete", "config-data", {manifest_key}], universal_newlines=True)
+                    #["cray", "artifacts", "list", "config-data"], universal_newlines=True)
+                    ["cray", "artifacts", "delete", "config-data", {manifest_key}], universal_newlines=True)
                 print(f'Output of cray artifacts list is {output}')
         except subprocess.CalledProcessError as err:
             raise ProductInstallException(
