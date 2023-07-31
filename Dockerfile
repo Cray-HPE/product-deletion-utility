@@ -39,8 +39,10 @@ COPY product_deletion_utility ${INSTALLDIR}/product_deletion_utility
 COPY docker_scripts/entrypoint.sh /entrypoint.sh
 COPY zypper.sh /
 RUN chmod +x /entrypoint.sh
-RUN zypper addrepo --no-gpgcheck -f https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/sle-15sp2 algol60
-RUN zypper install -y curl
+RUN zypper addrepo --no-gpgcheck -f https://artifactory.algol60.net/artifactory/csm-rpms/hpe/stable/ algol60
+RUN zypper ref && \
+    zypper update -y && \
+    zypper install -y curl
 RUN --mount=type=secret,id=ARTIFACTORY_READONLY_USER --mount=type=secret,id=ARTIFACTORY_READONLY_TOKEN ./zypper.sh && rm /zypper.sh
 
 # For external dependencies, always pull from internal-pip-stable-local
