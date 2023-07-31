@@ -66,20 +66,20 @@ class TestDelete(unittest.TestCase):
     def test_delete_success(self):
         """Test the successful case for delete()."""
         delete(Namespace(
-            product=self.mock_delete_product.product,
-            version=self.mock_delete_product.version,
+            catalogname='mock_catalognamespace',
+            catalognamespace='mock_catalognamespace',
+            productname=self.mock_delete_product.product,
+            productversion=self.mock_delete_product.version,
             docker_url='mock_docker_url',
             nexus_url='mock_nexus_url',
-            product_catalog_name='mock_name',
-            product_catalog_namespace='mock_namespace',
             nexus_credentials_secret_name='mock_nexus_secret',
             nexus_credentials_secret_namespace='mock_nexus_secret_namespace'
         ))
         self.mock_delete_product_catalog_cls.assert_called_once_with(
             catalogname='mock_catalognamespace',
             catalognamespace='mock_catalognamespace',
-            productname='mock_productname',
-            productversion='mock_productversion',
+            productname=self.mock_delete_product.product,
+            productversion=self.mock_delete_product.version,
             docker_url='mock_docker_url',
             nexus_url='mock_nexus_url',
             nexus_credentials_secret_name='mock_nexus_secret',
