@@ -53,9 +53,6 @@ RUN --mount=type=secret,id=netrc,target=/root/.netrc \
     python3 -m venv $VIRTUAL_ENV && \
     pip install --no-cache-dir -U pip && \
     pip install --no-cache-dir /deletion/ && \
-    pip install --no-cache-dir -U certifi && \
     rm -rf /deletion/
-
-RUN zypper install -y curl    
 
 ENTRYPOINT ["/entrypoint.sh"]
