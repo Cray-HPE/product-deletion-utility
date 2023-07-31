@@ -243,7 +243,7 @@ class UninstallComponents():
                 print(f'S3 key could not be retrieved for image ID - {image_id}')
 
             else:
-                for image_s3_key in image_s3_keys:
+                for image_s3_key in image_s3_keys.rstrip().split('\n'):
                     s3_delete_command = "cray artifacts delete boot-images {}".format(image_s3_key)
                     output = subprocess.check_output(s3_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
                     print(f'Output from image delete from S3 - {output}')
