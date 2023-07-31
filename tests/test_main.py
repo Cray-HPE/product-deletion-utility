@@ -51,7 +51,7 @@ from product_deletion_utility.components.constants import (
 class TestDelete(unittest.TestCase):
     """Tests for delete()."""
     def setUp(self):
-        self.mock_delete_product_catalog_cls = patch('product_deletion_utility.main.DeleteProductComponent').start()
+        self.mock_delete_product_catalog_cls = patch('product_deletion_utility.delete.DeleteProductComponent').start()
         self.mock_delete_product_catalog = self.mock_delete_product_catalog_cls.return_value
 
         self.mock_delete_product = self.mock_delete_product_catalog.get_product.return_value
