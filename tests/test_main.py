@@ -27,6 +27,7 @@ Unit tests for the product_deletion_utility.main module.
 
 from argparse import Namespace
 import copy
+from urllib.error import HTTPError
 import unittest
 from unittest.mock import call, Mock, patch
 from nexusctl import DockerApi
