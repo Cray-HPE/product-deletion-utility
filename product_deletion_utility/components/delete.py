@@ -108,12 +108,16 @@ class UninstallComponents():
         try:
             output = subprocess.check_output(
                 #["cray", "artifacts", "list", "boot-images"], universal_newlines=True)
-                ["cray", "artifacts", "delete", "%s" % s3_bucket, "%s" % s3_key], universal_newlines=True)
+                ["cray", "artifacts", "delete", "%s" % s3_bucket, "%s" % s3_key], stderr=subprocess.STDOUT, universal_newlines=True)
             print(f'Output of cray artifacts delete is {output}')
         except subprocess.CalledProcessError as err:
-            raise ProductInstallException(
-                f'Failed to remove S3 artifacts {s3_artifact_short_name} with error: {err}'
-            )
+            if 'not found' in err.output:
+                print(f'Artifact {s3_key} not available in S3 bucket - {s3_bucket}')
+                print(f'Output of cray artifacts delete is', err.output)
+            else:
+                raise ProductInstallException(
+                    f'Failed to remove S3 artifacts {s3_artifact_short_name} with error: {err}'
+                )
 
     def uninstall_hosted_repos(self, hosted_repo_name, nexus_api):
         """Remove a version's package repositories from Nexus.
@@ -185,9 +189,12 @@ class UninstallComponents():
                 print(f'Removing the following manifest - {manifest_key}')
                 output = subprocess.check_output(
                     #["cray", "artifacts", "list", "config-data"], universal_newlines=True)
-                    ["cray", "artifacts", "delete", "config-data", "%s" % manifest_key], universal_newlines=True)
+                    ["cray", "artifacts", "delete", "config-data", "%s" % manifest_key], stderr=subprocess.STDOUT, universal_newlines=True)
                 print(f'Output of cray artifacts delete is {output}')
         except subprocess.CalledProcessError as err:
+            if 'not found' in err.output:
+                print(f'Manifest {manifest_key} not available in S3 bucket config-data')
+                print(f'Output of cray artifacts delete is', err.output)
             raise ProductInstallException(
                 f'Failed to remove loftsman manifest {manifest_key} from S3 with error: {err}'
             )
@@ -221,9 +228,12 @@ class UninstallComponents():
                 print(f'Successfully deleted recipe - {recipe_name} from IMS')
 
         except subprocess.CalledProcessError as err:
-            raise ProductInstallException(
-                f'Failed to remove IMS recipe {recipe_name} with error: {err}'
-            )
+            if 'not found' in err.output:
+                print(f'Failed to remove IMS recipe {recipe_name} with error: {err.output}')
+            else:
+                raise ProductInstallException(
+                    f'Failed to remove IMS recipe {recipe_name} with error: {err}'
+                )
 
     def uninstall_ims_images(self, image_name, image_id):
         """Removes ims images for a product version from the S3.
@@ -255,9 +265,12 @@ class UninstallComponents():
                 print(f'Successfully deleted image - {image_name} from IMS')
 
         except subprocess.CalledProcessError as err:
-            raise ProductInstallException(
-                f'Failed to remove IMS image {image_name} with error: {err}'
-            )
+            if 'not found' in err.output:
+                print(f'Failed to remove IMS image {image_name} with error: {err.output}')
+            else:
+                raise ProductInstallException(
+                    f'Failed to remove IMS image {image_name} with error: {err}'
+                )
 
 
 class DeleteProductComponent(ProductCatalog):
