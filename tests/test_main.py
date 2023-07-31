@@ -44,6 +44,51 @@ from product_deletion_utility.components.constants import (
     NEXUS_CREDENTIALS_SECRET_NAMESPACE
 )
 
+class TestDelete(unittest.TestCase):
+    """Tests for delete()."""
+    def setUp(self):
+        self.mock_delete_product_catalog_cls = patch('product_deletion_utility.components.delete').start()
+        self.mock_delete_product_catalog = self.mock_delete_product_catalog_cls.return_value
+
+        self.mock_delete_product = self.mock_delete_product_catalog.get_product.return_value
+        self.mock_delete_product.product = 'old-product'
+        self.mock_delete_product.version = 'x.y.z'
+        self.mock_delete_product.clone_url = 'https://vcs.local/cray/product-deletion-config-management.git'
+
+    def tearDown(self):
+        """Stop patches."""
+        patch.stopall()
+
+    def test_delete_success(self):
+        """Test the successful case for delete()."""
+        delete(Namespace(
+            product=self.mock_delete_product.product,
+            version=self.mock_delete_product.version,
+            docker_url='mock_docker_url',
+            nexus_url='mock_nexus_url',
+            product_catalog_name='mock_name',
+            product_catalog_namespace='mock_namespace',
+            nexus_credentials_secret_name='mock_nexus_secret',
+            nexus_credentials_secret_namespace='mock_nexus_secret_namespace'
+        ))
+        self.mock_delete_product_catalog_cls.assert_called_once_with(
+            catalogname='mock_catalognamespace',
+            catalognamespace='mock_catalognamespace',
+            productname='mock_productname',
+            productversion='mock_productversion',
+            docker_url='mock_docker_url',
+            nexus_url='mock_nexus_url',
+            nexus_credentials_secret_name='mock_nexus_secret',
+            nexus_credentials_secret_namespace='mock_nexus_secret_namespace'
+        )
+        self.mock_delete_product_catalog.remove_product_docker_images.assert_called_once()
+        self.mock_delete_product_catalog.remove_product_S3_artifacts.assert_called_once()
+        self.mock_delete_product_catalog.remove_product_helm_charts.assert_called_once()
+        self.mock_delete_product_catalog.remove_product_loftsman_manifests.assert_called_once()
+        self.mock_delete_product_catalog.remove_ims_images.assert_called_once()
+        self.mock_delete_product_catalog.remove_ims_recipes.assert_called_once()
+        self.mock_delete_product_catalog.remove_product_hosted_repos.assert_called_once()
+        
 
 
 class TestMain(unittest.TestCase):
