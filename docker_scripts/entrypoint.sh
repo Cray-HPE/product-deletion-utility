@@ -39,7 +39,7 @@ set -ex
 #cp /etc/ssl/ca-bundle.pem /etc/pki/trust/anchors/
 #export REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/platform-ca-certs.crt
 # pip install certifi --upgrade
-ping registry.local
+curl -i registry.local
 # export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
 # env
 # export SSL_CERT_DIR=/var/lib/ca-certificates/
