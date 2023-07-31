@@ -78,10 +78,10 @@ class UninstallComponents():
             print(f'Listing all repos')
             print(f'{repo_list}')
 
-            """docker_api.delete_image(
+            docker_api.delete_image(
                 docker_image_name, docker_image_version
             )
-            print(f'Removed Docker image {docker_image_short_name}')"""
+            print(f'Removed Docker image {docker_image_short_name}')
 
         except HTTPError as err:
             if err.code == 404:
