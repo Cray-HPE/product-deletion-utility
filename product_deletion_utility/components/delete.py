@@ -74,14 +74,14 @@ class UninstallComponents():
         """
         docker_image_short_name = f'{docker_image_name}:{docker_image_version}'
         try:
-            repo_list = docker_api.list_repos()
+            """repo_list = docker_api.list_repos()
             print(f'Listing all repos')
-            print(f'{repo_list}')
+            print(f'{repo_list}')"""
 
-            """docker_api.delete_image(
+            docker_api.delete_image(
                 docker_image_name, docker_image_version
             )
-            print(f'Removed Docker image {docker_image_short_name}')"""
+            print(f'Removed Docker image {docker_image_short_name}')
 
         except HTTPError as err:
             if err.code == 404:
@@ -107,8 +107,8 @@ class UninstallComponents():
         s3_artifact_short_name = f'{s3_bucket}:{s3_key}'
         try:
             output = subprocess.check_output(
-                ["cray", "artifacts", "list", "boot-images"], universal_newlines=True)
-                #["cray", "artifacts", "delete", {s3_bucket}, {s3_key}], universal_newlines=True)
+                #["cray", "artifacts", "list", "boot-images"], universal_newlines=True)
+                ["cray", "artifacts", "delete", {s3_bucket}, {s3_key}], universal_newlines=True)
             print(f'Output of cray artifacts list is {output}')
         except subprocess.CalledProcessError as err:
             raise ProductInstallException(
@@ -129,9 +129,9 @@ class UninstallComponents():
         """
         try:
             print(f'hosted repo name is {hosted_repo_name}')
-            repo_list=nexus_api.repos.list(hosted_repo_name)
-            print(f'repos list is {repo_list}')
-            #nexus_api.repos.delete(hosted_repo_name)
+            #repo_list=nexus_api.repos.list(hosted_repo_name)
+            #print(f'repos list is {repo_list}')
+            nexus_api.repos.delete(hosted_repo_name)
             print(f'Repository {hosted_repo_name} has been removed')
         except HTTPError as err:
             if err.code == 404:
@@ -159,8 +159,8 @@ class UninstallComponents():
         """
         helm_chart_short_name: str = f"{chart_name}:{chart_version}"
         try:
-            nexus_api.components.list("charts")
-            #nexus_api.components.delete(component_nexus_id)
+            #nexus_api.components.list("charts")
+            nexus_api.components.delete(component_nexus_id)
         except HTTPError as err:
             if err.code == 404:
                 print(
@@ -183,8 +183,8 @@ class UninstallComponents():
         try:
             for manifest_key in manifest_keys:
                 output = subprocess.check_output(
-                    ["cray", "artifacts", "list", "config-data"], universal_newlines=True)
-                    #["cray", "artifacts", "delete", "config-data", {manifest_key}], universal_newlines=True)
+                    #["cray", "artifacts", "list", "config-data"], universal_newlines=True)
+                    ["cray", "artifacts", "delete", "config-data", {manifest_key}], universal_newlines=True)
                 print(f'Output of cray artifacts list is {output}')
         except subprocess.CalledProcessError as err:
             raise ProductInstallException(
@@ -208,7 +208,7 @@ class UninstallComponents():
             if not recipe_s3_key:
                 print(f'S3 key could not be retrieved for recipe ID - {recipe_id}')
 
-            '''else:
+            else:
                 s3_delete_command = "cray artifacts delete ims {}".format(recipe_s3_key)
                 output = subprocess.check_output(s3_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
                 print(f'Output from recipe delete from S3 - {output}')
@@ -217,7 +217,7 @@ class UninstallComponents():
                 ims_delete_command = "cray ims recipes delete {}".format(recipe_id)
                 output = subprocess.check_output(ims_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
                 print(f'Output from recipe delete from IMS - {output}')
-                print(f'Successfully deleted recipe - {recipe_name} from IMS')'''
+                print(f'Successfully deleted recipe - {recipe_name} from IMS')
 
         except subprocess.CalledProcessError as err:
             raise ProductInstallException(
@@ -241,7 +241,7 @@ class UninstallComponents():
             if not image_s3_keys:
                 print(f'S3 key could not be retrieved for image ID - {image_id}')
 
-            '''else:
+            else:
                 for image_s3_key in image_s3_keys:
                     s3_delete_command = "cray artifacts delete boot-images {}".format(image_s3_key)
                     output = subprocess.check_output(s3_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
@@ -251,7 +251,7 @@ class UninstallComponents():
                 ims_delete_command = "cray ims images delete {}".format(image_id)
                 output = subprocess.check_output(ims_delete_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
                 print(f'Output from image delete from IMS - {output}')
-                print(f'Successfully deleted image - {image_name} from IMS')'''
+                print(f'Successfully deleted image - {image_name} from IMS')
 
         except subprocess.CalledProcessError as err:
             raise ProductInstallException(
