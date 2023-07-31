@@ -56,4 +56,6 @@ RUN --mount=type=secret,id=netrc,target=/root/.netrc \
     pip install --no-cache-dir -U certifi && \
     rm -rf /deletion/
 
+RUN zypper install -y curl    
+
 ENTRYPOINT ["/entrypoint.sh"]
