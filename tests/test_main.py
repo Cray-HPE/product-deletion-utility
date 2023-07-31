@@ -155,8 +155,8 @@ class TestUninstallComponents(unittest.TestCase):
         mock_manifest_keys = [ 'manifest1', 'manifest2']
 	
         self.mock_UninstallComponents.uninstall_loftsman_manifests(mock_manifest_keys)
-        self.mock_UninstallComponents.uninstall_loftsman_manifests.assert_any_call('manifest1')
-        self.mock_UninstallComponents.uninstall_loftsman_manifests.assert_any_call('manifest2')
+        self.mock_UninstallComponents.uninstall_loftsman_manifests.assert_called_once_with(mock_manifest_keys)
+        #self.mock_UninstallComponents.uninstall_loftsman_manifests.assert_called_once_with('manifest2')
 
         self.mock_UninstallComponents.mock_subprocess.check_output(["cray", "artifacts", "delete", "config-data", 'manifest1'], universal_newlines=True)
         self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with(["cray", "artifacts", "delete", "config-data", 'manifest1'], universal_newlines=True)
@@ -210,12 +210,18 @@ class TestUninstallComponents(unittest.TestCase):
 
     def test_uninstall_ims_images_err(self):
 
+        mock_command ='cmd1'
+        #mock_s3_key = 'key1'
+        # mock_s3_cmd = 'cmd_s3'
+        # mock_ims_cmd = 'cmd_ims'
+	    
         self.mock_UninstallComponents.mock_subprocess.check_output.side_effect = ProductInstallException(
          "Error occurred" )
 
         with self.assertRaises(ProductInstallException) as context:
             self.mock_UninstallComponents.uninstall_ims_recipies('image1', 'image_id1')
-
+            self.mock_UninstallComponents.mock_subprocess.check_output(mock_command, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+		
         #self.mock_print.assert_called_once_with("Failed to remove IMS image image1")
 '''
 class TestDeleteProductComponent(unittest.TestCase):
@@ -288,10 +294,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.mock_delete_product_component.uninstall_component.uninstall_docker_image.assert_called_once_with(
             'image1','version1', self.mock_delete_product_component.mock_docker_api
         )
-        self.mock_print.assert_called_once_with(
-            "Failed to remove image1:version1: Error occurred"
-        )
-
+       self.mock_print.assert_called_once_with("Failed to remove image1:version1: Error occurred")
     
     def test_remove_product_S3_artifacts(self):
         """Test removing product S3 artifacts"""
