@@ -58,7 +58,7 @@ class TestUninstallComponents(unittest.TestCase):
         self.mock_UninstallComponents= UninstallComponents()
         self.mock_UninstallComponents.mock_docker_api= Mock()
         self.mock_UninstallComponents.mock_nexus_api= Mock()
-        self.mock_UninstallComponents.uninstall_docker_image= Mock()
+       # self.mock_UninstallComponents.uninstall_docker_image= Mock()
         self.mock_UninstallComponents.uninstall_s3_artifacts= Mock()
         self.mock_UninstallComponents.uninstall_hosted_repos= Mock()
         self.mock_UninstallComponents.uninstall_helm_charts= Mock()
@@ -66,7 +66,7 @@ class TestUninstallComponents(unittest.TestCase):
         self.mock_UninstallComponents.uninstall_ims_recipies= Mock()
         self.mock_UninstallComponents.uninstall_ims_images= Mock()
         self.mock_UninstallComponents.mock_subprocess= Mock()
-        self.mock_UninstallComponents.mock_docker_api.delete_image= Mock()
+       # self.mock_UninstallComponents.mock_docker_api.delete_image= Mock()
         self.mock_UninstallComponents.mock_subprocess.checkoutput= Mock()
         self.mock_UninstallComponents.mock_nexus_api.repos.delete= Mock()
         self.mock_UninstallComponents.mock_nexus_api.components.delete= Mock()
@@ -79,8 +79,8 @@ class TestUninstallComponents(unittest.TestCase):
     def test_uninstall_docker_image(self):
 	    
         self.mock_UninstallComponents.uninstall_docker_image('image1', '2.0.0', self.mock_UninstallComponents.mock_docker_api)
-        self.mock_UninstallComponents.uninstall_docker_image.assert_called_once_with('image1', '2.0.0', self.mock_UninstallComponents.mock_docker_api)
-        self.mock_UninstallComponents.mock_docker_api.delete_image('image1', '2.0.0')
+        #self.mock_UninstallComponents.uninstall_docker_image.assert_called_once_with('image1', '2.0.0', self.mock_UninstallComponents.mock_docker_api)
+        #self.mock_UninstallComponents.mock_docker_api.delete_image('image1', '2.0.0')
         self.mock_UninstallComponents.mock_docker_api.delete_image.assert_called_once_with('image1', '2.0.0')
 			
     def test_uninstall_docker_image_err(self):
