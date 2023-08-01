@@ -230,6 +230,7 @@ class TestDeleteProductComponent(unittest.TestCase):
     def setUp(self):
         """Set up mocks"""
         self.mock_delete_product_component= DeleteProductComponent()
+        self.mock_delete_component._get_k8s_api= Mock()
         self.mock_delete_product_component.get_product= Mock()
         self.mock_delete_product_component.mock_docker_api=Mock()
         self.mock_delete_product_component.mock_nexus_api=Mock()
