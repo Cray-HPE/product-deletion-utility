@@ -226,15 +226,7 @@ class TestUninstallComponents(unittest.TestCase):
         #self.mock_print.assert_called_once_with("Failed to remove IMS image image1")
 
 
-
-	
-class TestDeleteProductComponent(unittest.TestCase):
-
-    
-    def setUp(self):
-        """Set up mocks"""
-
-	def mocked_init(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
+def mocked_init(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
                         catalognamespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
                         productname=None,
                         productversion=None,
@@ -242,19 +234,25 @@ class TestDeleteProductComponent(unittest.TestCase):
                         docker_url=DEFAULT_DOCKER_URL,
                         nexus_credentials_secret_name=NEXUS_CREDENTIALS_SECRET_NAME,
                         nexus_credentials_secret_namespace=NEXUS_CREDENTIALS_SECRET_NAMESPACE):
-            self.pname = productname
-            self.pversion = productversion
-            self.uninstall_component = UninstallComponents()
-            self.k8s_client = Mock()
-            self._update_environment_with_nexus_credentials(nexus_credentials_secret_name, nexus_credentials_secret_namespace)
-            self.docker_api = DockerApi(DockerClient(docker_url))
-            self.nexus_api = NexusApi(NexusClient(nexus_url))
-            repo_list = self.docker_api.list_repos()
-            print(f'Listing all repos')
-            print(f'{repo_list}')
-            print(f'catalog name and namespace are {catalogname}, {catalognamespace}')
-             # inheriting the properties of parent ProductCatalog class
-            super().__init__(catalogname, catalognamespace)
+    self.pname = productname
+    self.pversion = productversion
+    self.uninstall_component = UninstallComponents()
+    self.k8s_client = Mock()
+    self._update_environment_with_nexus_credentials(nexus_credentials_secret_name, nexus_credentials_secret_namespace)
+    self.docker_api = DockerApi(DockerClient(docker_url))
+    self.nexus_api = NexusApi(NexusClient(nexus_url))
+    repo_list = self.docker_api.list_repos()
+    print(f'Listing all repos')
+    print(f'{repo_list}')
+    print(f'catalog name and namespace are {catalogname}, {catalognamespace}')
+    # inheriting the properties of parent ProductCatalog class
+    super().__init__(catalogname, catalognamespace)
+	
+class TestDeleteProductComponent(unittest.TestCase):
+
+    
+    def setUp(self):
+        """Set up mocks"""
 	
         self.mock_delete_product_component= patch.object(DeleteProductComponent, '__init__', mocked_init)
         self.mock_delete_product_component.get_product= Mock()
