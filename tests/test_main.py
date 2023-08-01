@@ -225,13 +225,40 @@ class TestUninstallComponents(unittest.TestCase):
 		
         #self.mock_print.assert_called_once_with("Failed to remove IMS image image1")
 
+
+class DeleteProductComponent2(DeleteProductComponent):
+	
 class TestDeleteProductComponent(unittest.TestCase):
 
+    
     def setUp(self):
         """Set up mocks"""
-        self.mock_delete_product_component= DeleteProductComponent()
-        self.mock_delete_component.k8s_client= Mock()
-        self.mock_delete_product_component._get_k8s_api= Mock()
+
+	def mocked_init(self,
+	         catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
+                 catalognamespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
+                 productname=None,
+                 productversion=None,
+                 nexus_url=DEFAULT_NEXUS_URL,
+                 docker_url=DEFAULT_DOCKER_URL,
+                 nexus_credentials_secret_name=NEXUS_CREDENTIALS_SECRET_NAME,
+                 nexus_credentials_secret_namespace=NEXUS_CREDENTIALS_SECRET_NAMESPACE):
+	     self.pname = productname
+             self.pversion = productversion
+             self.uninstall_component = UninstallComponents()
+             self.k8s_client = Mock()
+             self._update_environment_with_nexus_credentials(
+                 nexus_credentials_secret_name, nexus_credentials_secret_namespace)
+             self.docker_api = DockerApi(DockerClient(docker_url))
+             self.nexus_api = NexusApi(NexusClient(nexus_url))
+             repo_list = self.docker_api.list_repos()
+             print(f'Listing all repos')
+             print(f'{repo_list}')
+             print(f'catalog name and namespace are {catalogname}, {catalognamespace}')
+             # inheriting the properties of parent ProductCatalog class
+             super().__init__(catalogname, catalognamespace)
+	
+        self.mock_delete_product_component= patch.object(DeleteProductComponent, '__init__', mocked_init)
         self.mock_delete_product_component.get_product= Mock()
         self.mock_delete_product_component.mock_docker_api=Mock()
         self.mock_delete_product_component.mock_nexus_api=Mock()
