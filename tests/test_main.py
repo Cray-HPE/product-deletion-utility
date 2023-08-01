@@ -226,7 +226,7 @@ class TestUninstallComponents(unittest.TestCase):
         #self.mock_print.assert_called_once_with("Failed to remove IMS image image1")
 
 
-class DeleteProductComponent2(DeleteProductComponent):
+
 	
 class TestDeleteProductComponent(unittest.TestCase):
 
