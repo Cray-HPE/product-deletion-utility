@@ -276,14 +276,14 @@ class TestDeleteProductComponent(unittest.TestCase):
             print("Mock init")
 
             self.mock_delete_product_component= DeleteProductComponent()
-        self.mock_delete_product_component.remove_product_docker_images= Mock()
-        self.mock_delete_product_component.remove_product_S3_artifacts= Mock()
-        self.mock_delete_product_component.remove_product_helm_charts= Mock()
-        self.mock_delete_product_component.remove_product_loftsman_manifests= Mock()
-        self.mock_delete_product_component.remove_ims_recipes= Mock()
-        self.mock_delete_product_component.remove_ims_images= Mock()
-        self.mock_delete_product_component.remove_product_hosted_repos= Mock()
-        self.mock_delete_product_component.remove_product_entry= Mock()
+            self.mock_delete_product_component.remove_product_docker_images= Mock()
+            self.mock_delete_product_component.remove_product_S3_artifacts= Mock()
+            self.mock_delete_product_component.remove_product_helm_charts= Mock()
+            self.mock_delete_product_component.remove_product_loftsman_manifests= Mock()
+            self.mock_delete_product_component.remove_ims_recipes= Mock()
+            self.mock_delete_product_component.remove_ims_images= Mock()
+            self.mock_delete_product_component.remove_product_hosted_repos= Mock()
+            self.mock_delete_product_component.remove_product_entry= Mock()
         
     def tearDown(self):
         """Stop patches."""
@@ -294,7 +294,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.mock_UninstallComponents.uninstall_docker_image.assert_called_once_with('image1', '2.0.0', self.mock_UninstallComponents.mock_docker_api)
         self.mock_UninstallComponents.mock_docker_api.delete_image('image1', '2.0.0')
         self.mock_UninstallComponents.mock_docker_api.delete_image.assert_called_once_with('image1', '2.0.0')'''
-	
+	    
         self.mock_delete_product_component.remove_product_docker_images()
         self.mock_delete_product_component.remove_product_docker_images.assert_called_once()
 	    
