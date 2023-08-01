@@ -224,7 +224,7 @@ class TestUninstallComponents(unittest.TestCase):
             self.mock_UninstallComponents.mock_subprocess.check_output(mock_command, shell=True, stderr=self.mock_UninstallComponents.mock_subprocess.STDOUT, universal_newlines=True)
 		
         #self.mock_print.assert_called_once_with("Failed to remove IMS image image1")
-'''
+
 class TestDeleteProductComponent(unittest.TestCase):
 
     def setUp(self):
@@ -602,7 +602,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.assertEqual(
             str(context.exception),
             "Error removing configmap1-version1 from product catalog: Command 'catalog_delete' returned non-zero exit status 1. Output: Error occurred"
-        )'''
+        )
 
 	    
 class TestMain(unittest.TestCase):
