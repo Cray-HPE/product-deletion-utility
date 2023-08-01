@@ -295,7 +295,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.mock_delete_product_component.uninstall_component.uninstall_docker_image.assert_called_once_with(
             'image1','version1', self.mock_delete_product_component.mock_docker_api
         )
-	self.mock_print.assert_called_once_with("Failed to remove image1:version1: Error occurred")
+        self.mock_print.assert_called_once_with("Failed to remove image1:version1: Error occurred")
     
     def test_remove_product_S3_artifacts(self):
         """Test removing product S3 artifacts"""
