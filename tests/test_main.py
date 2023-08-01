@@ -259,8 +259,23 @@ class TestDeleteProductComponent(unittest.TestCase):
 
     def setUp(self):
         """Set up mocks"""
-	
-        self.mock_delete_product_component= DeleteProductComponent2()
+	    def __init__(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
+                 catalognamespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
+                 productname=None,
+                 productversion=None,
+                 nexus_url=DEFAULT_NEXUS_URL,
+                 docker_url=DEFAULT_DOCKER_URL,
+                 nexus_credentials_secret_name=NEXUS_CREDENTIALS_SECRET_NAME,
+                 nexus_credentials_secret_namespace=NEXUS_CREDENTIALS_SECRET_NAMESPACE):
+
+            self.pname = productname
+            self.pversion = productversion
+            self.uninstall_component = UninstallComponents()
+            self.k8s_client = Mock()
+        with patch.object(DeleteProductComponent, '__init__', __init__):
+            print("Mock init")
+
+        self.mock_delete_product_component= DeleteProductComponent()
         self.mock_delete_product_component.get_product= Mock()
         self.mock_delete_product_component.mock_docker_api=Mock()
         self.mock_delete_product_component.mock_nexus_api=Mock()
