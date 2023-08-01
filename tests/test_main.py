@@ -235,9 +235,9 @@ class DeleteProductComponent2(DeleteProductComponent):
                  docker_url=DEFAULT_DOCKER_URL,
                  nexus_credentials_secret_name=NEXUS_CREDENTIALS_SECRET_NAME,
                  nexus_credentials_secret_namespace=NEXUS_CREDENTIALS_SECRET_NAMESPACE):
-        self.k8s_client = Mock()
+        
         super().__init__(catalogname, catalognamespace, productname, productversion, nexus_url, docker_url, nexus_credentials_secret_name, nexus_credentials_secret_namespace)
-
+        self.k8s_client = Mock()
 class TestDeleteProductComponent(unittest.TestCase):
 
     def setUp(self):
