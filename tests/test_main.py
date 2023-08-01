@@ -240,9 +240,7 @@ class DeleteProductComponent2(DeleteProductComponent):
         self.pversion = productversion
         self.uninstall_component = UninstallComponents()
         self.k8s_client = Mock()
-        self._update_environment_with_nexus_credentials(
-            nexus_credentials_secret_name, nexus_credentials_secret_namespace
-        )
+
         self.docker_api = DockerApi(DockerClient(docker_url))
         self.nexus_api = NexusApi(NexusClient(nexus_url))
 
