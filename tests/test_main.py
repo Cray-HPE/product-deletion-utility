@@ -259,7 +259,6 @@ class TestDeleteProductComponent(unittest.TestCase):
         """Stop patches."""
         patch.stopall()
 
-	def test_DeleteProductComponent(self):
     def __init__(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
                         catalognamespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
                         productname=None,
