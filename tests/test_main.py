@@ -26,34 +26,124 @@ Unit tests for the product_deletion_utility.main module.
 """
 
 from argparse import Namespace
-import copy
-from urllib.error import HTTPError
+import subprocess
 import unittest
-from unittest.mock import call, Mock, patch
-from nexusctl import DockerApi
+from unittest.mock import patch, Mock
+
+from urllib.error import HTTPError
 
 from product_deletion_utility.main import (
     main,
     delete
 )
+
+
+
 from product_deletion_utility.components.delete import (
-     UninstallComponents,
-     DeleteProductComponent,ProductInstallException
+    PRODUCT_CATALOG_CONFIG_MAP_NAME,
+    PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
+    UninstallComponents,
+    DeleteProductComponent,ProductInstallException
 )
+
+
 from product_deletion_utility.components.constants import (
     DEFAULT_DOCKER_URL,
     DEFAULT_NEXUS_URL,
-    PRODUCT_CATALOG_CONFIG_MAP_NAME,
-    PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
     NEXUS_CREDENTIALS_SECRET_NAME,
     NEXUS_CREDENTIALS_SECRET_NAMESPACE
 )
+ 
+
+
+class TestDelete(unittest.TestCase):
+    """Tests for delete()."""
+    def setUp(self):
+        self.mock_product_catalog_cls = patch('product_deletion_utility.main.DeleteProductComponent').start()
+        self.mock_product_catalog = self.mock_product_catalog_cls.return_value
+
+        self.mock_product = self.mock_product_catalog.get_product.return_value
+        self.mock_product.product = 'old-product'
+        self.mock_product.version = 'x.y.z'
+        self.mock_product.clone_url = 'https://vcs.local/cray/product-deletion-config-management.git'
+
+    def tearDown(self):
+        """Stop patches."""
+        patch.stopall()
+
+    def test_delete_success(self):
+        """Test the successful case for uninstall()."""
+        delete(Namespace(
+            catalogname='mock_name',
+            catalognamespace='mock_namespace',
+            productname=self.mock_product.product,
+            productversion=self.mock_product.version,
+            nexus_url='mock_nexus_url',
+            docker_url='mock_docker_url',
+            nexus_credentials_secret_name='mock_nexus_secret',
+            nexus_credentials_secret_namespace='mock_nexus_secret_namespace'
+        ))
+        self.mock_product_catalog_cls.assert_called_once_with(
+            name='mock_name',
+            namespace='mock_namespace',
+            docker_url='mock_docker_url',
+            nexus_url='mock_nexus_url',
+            nexus_credentials_secret_name='mock_nexus_secret',
+            nexus_credentials_secret_namespace='mock_nexus_secret_namespace'
+        )
+        self.mock_product_catalog.remove_product_docker_images.assert_called_once()
+        self.mock_product_catalog.remove_product_S3_artifacts.assert_called_once()
+        self.mock_product_catalog.remove_product_helm_charts.assert_called_once()
+        self.mock_product_catalog.remove_product_loftsman_manifests.assert_called_once()
+        self.mock_product_catalog.remove_ims_recipes.assert_called_once()
+        self.mock_product_catalog.remove_ims_images.assert_called_once()
+        self.mock_product_catalog.uninstall_product_hosted_repos.assert_called_once()
+        self.mock_product_catalog.remove_product_entry.assert_called_once()
+
+
+class TestUninstallComponents(unittest.TestCase):
+    """Tests for UninstallComponents."""
+
+    def setUp(self):
+        """Set up mocks"""
+        self.mock_docker_api=Mock()
+        self.mock_nexus_api=Mock()
+        self.mock_print = patch('builtins.print').start()
+        
+    def tearDown(self):
+        """Stop patches."""
+        patch.stopall()
+    
+    def test_uninstall_docker_image(self):
+        """Test uninstalling Docker images for an InstalledProductVersion."""
+        UninstallComponents.uninstall_docker_image('foo', 'bar', self.mock_docker_api)
+        self.mock_docker_api.delete_image.assert_called_once_with('foo', 'bar')
+
+    def test_uninstall_docker_image_not_found(self):
+        """Test uninstalling Docker images when image is not found is not an error."""
+        self.mock_docker_api.delete_image.side_effect = HTTPError(
+            url='http://nexus', code=404, msg='Not found', hdrs=None, fp=None
+        )
+        UninstallComponents.uninstall_docker_image('foo', 'bar', self.mock_docker_api)
+        self.mock_docker_api.delete_image.assert_called_once_with('foo', 'bar')
+        self.mock_print.assert_called_once_with('foo:bar has already been removed.')
+
+    def test_uninstall_docker_other_error(self):
+        """Test uninstalling Docker images when a non-404 error occurs is an error."""
+        http_error = self.mock_docker_api.delete_image.side_effect = HTTPError(
+            url='http://nexus', code=503, msg='Nexus problems', hdrs=None, fp=None
+        )
+        expected_regex = f'Failed to remove image foo:bar: {http_error}'
+        with self.assertRaisesRegex(ProductInstallException, expected_regex):
+            UninstallComponents.uninstall_docker_image('foo', 'bar', self.mock_docker_api)
+        self.mock_docker_api.delete_image.assert_called_once_with('foo', 'bar')
+
 
 class TestDeleteProductComponent(unittest.TestCase):
 
     def setUp(self):
         """Set up mocks"""
-        self.mock_delete_product_component= DeleteProductComponent()
+        self.mock_delete_product_component= Mock()
         self.mock_delete_product_component.get_product= Mock()
         self.mock_delete_product_component.mock_docker_api=Mock()
         self.mock_delete_product_component.mock_nexus_api=Mock()
@@ -435,41 +525,20 @@ class TestDeleteProductComponent(unittest.TestCase):
 class TestMain(unittest.TestCase):
     def setUp(self):
         """Set up mocks."""
-        self.mock_uninstall = patch('product_deletion_utility.main.delete').start()
+        self.mock_delete = patch('product_deletion_utility.main.delete').start()
 
     def tearDown(self):
         """Stop patches."""
         patch.stopall()
 
-    def test_uninstall_action(self):
-        """Test a basic uninstall."""
-        action = 'uninstall'
-        product = 'old-product'
-        version = '2.0.3'
-        patch('sys.argv', ['product-deletion-utility', action, product, version]).start()
-        main()
-        self.mock_uninstall.assert_called_once_with(
-            Namespace(
-                action=action,
-                product=product,
-                version=version,
-                docker_url=DEFAULT_DOCKER_URL,
-                nexus_url=DEFAULT_NEXUS_URL,
-                product_catalog_name=PRODUCT_CATALOG_CONFIG_MAP_NAME,
-                product_catalog_namespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
-                nexus_credentials_secret_name=NEXUS_CREDENTIALS_SECRET_NAME,
-                nexus_credentials_secret_namespace=NEXUS_CREDENTIALS_SECRET_NAMESPACE,
-            )
-        )
-
     def test_delete_action(self):
-        """Test a basic uninstall."""
+        """Test a basic delete."""
         action = 'delete'
         product = 'old-product'
         version = '2.0.3'
         patch('sys.argv', ['product-deletion-utility', action, product, version]).start()
         main()
-        self.mock_uninstall.assert_called_once_with(
+        self.mock_delete.assert_called_once_with(
             Namespace(
                 action=action,
                 product=product,
