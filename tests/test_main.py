@@ -259,31 +259,6 @@ class TestDeleteProductComponent(unittest.TestCase):
         """Stop patches."""
         patch.stopall()
 
-    def __init__(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
-                        catalognamespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
-                        productname=None,
-                        productversion=None,
-                        nexus_url=DEFAULT_NEXUS_URL,
-                        docker_url=DEFAULT_DOCKER_URL,
-                        nexus_credentials_secret_name=NEXUS_CREDENTIALS_SECRET_NAME,
-                        nexus_credentials_secret_namespace=NEXUS_CREDENTIALS_SECRET_NAMESPACE):
-    self.pname = productname
-    self.pversion = productversion
-    self.uninstall_component = UninstallComponents()
-    self.k8s_client = Mock()
-    self._update_environment_with_nexus_credentials(nexus_credentials_secret_name, nexus_credentials_secret_namespace)
-    self.docker_api = DockerApi(DockerClient(docker_url))
-    self.nexus_api = NexusApi(NexusClient(nexus_url))
-    repo_list = self.docker_api.list_repos()
-    print(f'Listing all repos')
-    print(f'{repo_list}')
-    print(f'catalog name and namespace are {catalogname}, {catalognamespace}')
-    # inheriting the properties of parent ProductCatalog class
-    super().__init__(catalogname, catalognamespace)
-	
-    with patch.object(DatabaseThing, '__init__', __init__):
-        # assert something
-
     def test_remove_product_docker_images(self):
         '''self.mock_UninstallComponents.uninstall_docker_image('image1', '2.0.0', self.mock_UninstallComponents.mock_docker_api)
         self.mock_UninstallComponents.uninstall_docker_image.assert_called_once_with('image1', '2.0.0', self.mock_UninstallComponents.mock_docker_api)
