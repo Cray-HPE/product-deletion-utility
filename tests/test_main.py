@@ -275,17 +275,17 @@ class TestDeleteProductComponent(unittest.TestCase):
         with patch.object(DeleteProductComponent, '__init__', __init__):
             print("Mock init")
 
-        self.mock_delete_product_component= DeleteProductComponent()
-        self.mock_delete_product_component.get_product= Mock()
-        self.mock_delete_product_component.mock_docker_api=Mock()
-        self.mock_delete_product_component.mock_nexus_api=Mock()
-        self.mock_delete_product_component.uninstall_component= Mock()
-        self.mock_delete_product_component.uninstall_component.uninstall_docker_image=Mock()
-        self.mock_delete_product_component.uninstall_component.uninstall_S3_artifact = Mock()
-        self.mock_delete_product_component.uninstall_component.uninstall_helm_charts = Mock()
-        self.mock_delete_product_component.uninstall_component.uninstall_loftsman_manifests = Mock()
-        self.mock_delete_product_component.uninstall_component.uninstall_ims_recipes = Mock()
-        self.mock_print = patch('builtins.print').start()
+            self.mock_delete_product_component= DeleteProductComponent()
+            self.mock_delete_product_component.get_product= Mock()
+            self.mock_delete_product_component.mock_docker_api=Mock()
+            self.mock_delete_product_component.mock_nexus_api=Mock()
+            self.mock_delete_product_component.uninstall_component= Mock()
+            self.mock_delete_product_component.uninstall_component.uninstall_docker_image=Mock()
+            self.mock_delete_product_component.uninstall_component.uninstall_S3_artifact = Mock()
+            self.mock_delete_product_component.uninstall_component.uninstall_helm_charts = Mock()
+            self.mock_delete_product_component.uninstall_component.uninstall_loftsman_manifests = Mock()
+            self.mock_delete_product_component.uninstall_component.uninstall_ims_recipes = Mock()
+            self.mock_print = patch('builtins.print').start()
         
     def tearDown(self):
         """Stop patches."""
