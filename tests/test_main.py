@@ -275,15 +275,15 @@ class TestDeleteProductComponent(unittest.TestCase):
         with patch.object(DeleteProductComponent, '__init__', __init__):
             print("Mock init")
 
-            self.mock_delete_product_component= DeleteProductComponent()
-            self.mock_delete_product_component.remove_product_docker_images= Mock()
-            self.mock_delete_product_component.remove_product_S3_artifacts= Mock()
-            self.mock_delete_product_component.remove_product_helm_charts= Mock()
-            self.mock_delete_product_component.remove_product_loftsman_manifests= Mock()
-            self.mock_delete_product_component.remove_ims_recipes= Mock()
-            self.mock_delete_product_component.remove_ims_images= Mock()
-            self.mock_delete_product_component.remove_product_hosted_repos= Mock()
-            self.mock_delete_product_component.remove_product_entry= Mock()
+        self.mock_delete_product_component= DeleteProductComponent()
+        self.mock_delete_product_component.remove_product_docker_images= Mock()
+        self.mock_delete_product_component.remove_product_S3_artifacts= Mock()
+        self.mock_delete_product_component.remove_product_helm_charts= Mock()
+        self.mock_delete_product_component.remove_product_loftsman_manifests= Mock()
+        self.mock_delete_product_component.remove_ims_recipes= Mock()
+        self.mock_delete_product_component.remove_ims_images= Mock()
+        self.mock_delete_product_component.remove_product_hosted_repos= Mock()
+        self.mock_delete_product_component.remove_product_entry= Mock()
         
     def tearDown(self):
         """Stop patches."""
