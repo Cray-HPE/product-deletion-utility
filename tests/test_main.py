@@ -225,8 +225,42 @@ class TestUninstallComponents(unittest.TestCase):
 		
         #self.mock_print.assert_called_once_with("Failed to remove IMS image image1")
 
+				
+class DeleteProductComponent2(DeleteProductComponent):
+    def __init__(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
+                 catalognamespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
+                 productname=None,
+                 productversion=None,
+                 nexus_url=DEFAULT_NEXUS_URL,
+                 docker_url=DEFAULT_DOCKER_URL,
+                 nexus_credentials_secret_name=NEXUS_CREDENTIALS_SECRET_NAME,
+                 nexus_credentials_secret_namespace=NEXUS_CREDENTIALS_SECRET_NAMESPACE):
+        self.k8s_client = Mock()
+        super().__init__(catalogname, catalognamespace, productname, productversion, nexus_url, docker_url, nexus_credentials_secret_name, nexus_credentials_secret_namespace)
 
-def mocked_init(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
+class TestDeleteProductComponent(unittest.TestCase):
+
+    def setUp(self):
+        """Set up mocks"""
+	
+        self.mock_delete_product_component= DeleteProductComponent2()
+        self.mock_delete_product_component.get_product= Mock()
+        self.mock_delete_product_component.mock_docker_api=Mock()
+        self.mock_delete_product_component.mock_nexus_api=Mock()
+        self.mock_delete_product_component.uninstall_component= Mock()
+        self.mock_delete_product_component.uninstall_component.uninstall_docker_image=Mock()
+        self.mock_delete_product_component.uninstall_component.uninstall_S3_artifact = Mock()
+        self.mock_delete_product_component.uninstall_component.uninstall_helm_charts = Mock()
+        self.mock_delete_product_component.uninstall_component.uninstall_loftsman_manifests = Mock()
+        self.mock_delete_product_component.uninstall_component.uninstall_ims_recipes = Mock()
+        self.mock_print = patch('builtins.print').start()
+        
+    def tearDown(self):
+        """Stop patches."""
+        patch.stopall()
+
+	def test_DeleteProductComponent(self):
+    def __init__(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
                         catalognamespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
                         productname=None,
                         productversion=None,
@@ -247,27 +281,9 @@ def mocked_init(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
     print(f'catalog name and namespace are {catalogname}, {catalognamespace}')
     # inheriting the properties of parent ProductCatalog class
     super().__init__(catalogname, catalognamespace)
-
-class TestDeleteProductComponent(unittest.TestCase):
-
-    def setUp(self):
-        """Set up mocks"""
 	
-        self.mock_delete_product_component= patch.object(DeleteProductComponent, '__init__', mocked_init)
-        self.mock_delete_product_component.get_product= Mock()
-        self.mock_delete_product_component.mock_docker_api=Mock()
-        self.mock_delete_product_component.mock_nexus_api=Mock()
-        self.mock_delete_product_component.uninstall_component= Mock()
-        self.mock_delete_product_component.uninstall_component.uninstall_docker_image=Mock()
-        self.mock_delete_product_component.uninstall_component.uninstall_S3_artifact = Mock()
-        self.mock_delete_product_component.uninstall_component.uninstall_helm_charts = Mock()
-        self.mock_delete_product_component.uninstall_component.uninstall_loftsman_manifests = Mock()
-        self.mock_delete_product_component.uninstall_component.uninstall_ims_recipes = Mock()
-        self.mock_print = patch('builtins.print').start()
-        
-    def tearDown(self):
-        """Stop patches."""
-        patch.stopall()
+    with patch.object(DatabaseThing, '__init__', __init__):
+        # assert something
 
     def test_remove_product_docker_images(self):
         '''self.mock_UninstallComponents.uninstall_docker_image('image1', '2.0.0', self.mock_UninstallComponents.mock_docker_api)
