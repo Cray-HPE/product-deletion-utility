@@ -26,10 +26,10 @@ Unit tests for the product_deletion_utility.main module.
 """
 
 from argparse import Namespace
-import copy
 import unittest
 from unittest.mock import call, Mock, patch
 from nexusctl import DockerApi
+from mock import patch
 
 from product_deletion_utility.main import (
     main,
