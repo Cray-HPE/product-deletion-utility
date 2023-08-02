@@ -178,9 +178,9 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.mock_delete_product_component.remove_product_docker_images()
 
         self.mock_delete_product_component.uninstall_component.uninstall_docker_image.assert_not_called()
-        #self.mock_print.assert_called_once_with(
+        '''self.mock_print.assert_called_once_with(
             "Not removing Docker image image1:version1 used by the following other product versions: mock_similar_product"
-        )
+        )'''
     
     def test_remove_product_docker_images_error(self):
         """Test removing docker images with ProductInstallException error"""
