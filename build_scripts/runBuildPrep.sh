@@ -24,5 +24,6 @@
 #
 
 PIP_EXTRA_INDEX_URL="https://arti.hpc.amslabs.hpecorp.net/artifactory/internal-pip-stable-local/ \
-    https://artifactory.algol60.net/artifactory/csm-python-modules/simple" \
+    https://artifactory.algol60.net/artifactory/csm-python-modules/simple/ \
+    https://artifactory.algol60.net/artifactory/csm-python-modules/unstable" \
 pip3 install -r requirements-dev.lock.txt

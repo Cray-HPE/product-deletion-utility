@@ -30,7 +30,7 @@ endif
 
 # Helm Chart
 
-all : prep unittest image
+all : prep image
 
 prep:
 		build_scripts/runBuildPrepVenv.sh

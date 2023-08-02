@@ -11,5 +11,5 @@ zypper --non-interactive rr --all
 zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Basesystem/15-SP4/${ARCH}/product?auth=basic sles15sp4-Module-Basesystem-product
 zypper --non-interactive ar --no-gpgcheck ${CSM_RPMS_HPE_STABLE}/sle-15sp4/?auth=basic CSM-SLE-15SP4
 zypper update -y
-zypper install -y craycli git-core bash python3
+zypper install -y craycli git-core bash python3 curl jq
 zypper clean -a && zypper --non-interactive rr --all && rm -f /etc/zypp/repos.d/*

@@ -138,7 +138,7 @@ class UninstallComponents():
                 )
 
 
-    def uninstall_helm_charts(self, chart_name, chart_version, component_nexus_id, nexus_api):
+    def uninstall_helm_charts(self, chart_name, chart_version, nexus_api, component_nexus_id):
         """Removes a helm chart.
         It is not recommended to call this function directly, instead use
         DeleteProductComponent.remove_product_helm_charts to check that the helm chart
@@ -177,6 +177,7 @@ class UninstallComponents():
         """
         try:
             for manifest_key in manifest_keys:
+                manifest_key = manifest_key.replace('config-data/','')
                 print(f'Removing the following manifest - {manifest_key}')
                 output = subprocess.check_output(
                     ["cray", "artifacts", "delete", "config-data", "%s" % manifest_key], stderr=subprocess.STDOUT, universal_newlines=True)
@@ -490,7 +491,7 @@ class DeleteProductComponent(ProductCatalog):
                     for component in nexus_charts.components:
                         if component.name == chart_name and component.version == chart_version:
                             print(
-                                f'Removing the following chart - {chart_name}:{chart_version}')
+                                f'Removing the following chart - {chart_name}:{chart_version} with ID {component.id}')
                             self.uninstall_component.uninstall_helm_charts(
                                 chart_name, chart_version, self.nexus_api, component.id)
                 except ProductInstallException as err:
