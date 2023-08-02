@@ -164,7 +164,7 @@ class TestUninstallComponents(unittest.TestCase):
 	
         with self.assertRaises(ProductInstallException) as context:
             self.mock_UninstallComponents.uninstall_loftsman_manifests(mock_manifest_keys)
-	        for manifest_key in mock_manifest_keys:
+	    for manifest_key in mock_manifest_keys:
                 self.mock_UninstallComponents.mock_subprocess.check_output(["cray", "artifacts", "delete", "config-data", {manifest_key}], universal_newlines=True)
         
         for manifest_key in mock_manifest_keys:
