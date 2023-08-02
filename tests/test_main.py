@@ -167,7 +167,7 @@ class TestUninstallComponents(unittest.TestCase):
     def test_uninstall_ims_recipes(self):
 	
         self.mock_UninstallComponents.uninstall_ims_recipes('recipe1', 'recipe_id1')
-	    self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('cmd', shell=True, stderr=self.mock_UninstallComponents.mock_subprocess.STDOUT, universal_newlines=True)
+        self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('cmd', shell=True, stderr=self.mock_UninstallComponents.mock_subprocess.STDOUT, universal_newlines=True)
 
     def test_uninstall_ims_recipes_err(self):
 	
