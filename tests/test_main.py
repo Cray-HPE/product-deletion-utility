@@ -153,7 +153,7 @@ class TestUninstallComponents(unittest.TestCase):
 
         for manifest_key in mock_manifest_keys:
             self.mock_UninstallComponents.mock_subprocess.check_output(["cray", "artifacts", "delete", "config-data", {manifest_key}], universal_newlines=True)
-            self.mock_UninstallComponents.mock_subprocess.check_output.assert_any_call(["cray", "artifacts", "delete", "config-data", {manifest_key}], universal_newlines=True)
+            self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with(["cray", "artifacts", "delete", "config-data", {manifest_key}], universal_newlines=True)
         
     def test_uninstall_loftsman_manifests_err(self):
 		
@@ -168,7 +168,7 @@ class TestUninstallComponents(unittest.TestCase):
                 self.mock_UninstallComponents.mock_subprocess.check_output(["cray", "artifacts", "delete", "config-data", {manifest_key}], universal_newlines=True)
         
         for manifest_key in mock_manifest_keys:
-            self.mock_UninstallComponents.mock_subprocess.check_output.assert_any_call(["cray", "artifacts", "delete", "config-data", {manifest_key}], universal_newlines=True)
+            self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with(["cray", "artifacts", "delete", "config-data", {manifest_key}], universal_newlines=True)
 
         #self.mock_print.assert_called_once_with("Failed to remove loftsman manifest manifest_keys from S3")
 		
