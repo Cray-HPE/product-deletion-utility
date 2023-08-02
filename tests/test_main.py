@@ -97,7 +97,7 @@ class TestUninstallComponents(unittest.TestCase):
     def test_uninstall_S3_artifact(self):
 		
         self.mock_UninstallComponents.uninstall_S3_artifact('bucket1', 'key1')
-        self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('bucket1', 'key1')
+        self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with(["cray", "artifacts", "delete", 'bucket1', 'key1'], universal_newlines=True)
 		
     def test_uninstall_S3_artifact_err(self):
 	
@@ -107,7 +107,7 @@ class TestUninstallComponents(unittest.TestCase):
         with self.assertRaises(ProductInstallException):
             self.mock_UninstallComponents.uninstall_S3_artifact('bucket1', 'key1')
 	
-        self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('bucket1', 'key1')
+        self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with(["cray", "artifacts", "delete", 'bucket1', 'key1'], universal_newlines=True)
         #self.mock_print.assert_called_once_with("Failed to remove bucket1:key1 from S3 artifacts")
 		
     def test_uninstall_hosted_repos(self):
@@ -145,8 +145,9 @@ class TestUninstallComponents(unittest.TestCase):
         mock_manifest_keys = [ 'manifest1', 'manifest2']
 	
         self.mock_UninstallComponents.uninstall_loftsman_manifests(mock_manifest_keys)
-        self.mock_UninstallComponents.mock_subprocess.check_output.assert_any_call('manifest1')
-        self.mock_UninstallComponents.mock_subprocess.check_output.assert_any_call('manifest2')
+        for manifest_key in mock_manifest_keys:
+            self.mock_UninstallComponents.mock_subprocess.check_output.assert_any_call(["cray", "artifacts", "delete", "config-data", {manifest_key}], universal_newlines=True)
+        
 	
     def test_uninstall_loftsman_manifests_err(self):
 		
@@ -157,22 +158,17 @@ class TestUninstallComponents(unittest.TestCase):
 	
         with self.assertRaises(ProductInstallException) as context:
             self.mock_UninstallComponents.uninstall_loftsman_manifests(mock_manifest_keys)
-	
+	    
+        for manifest_key in mock_manifest_keys:
+            self.mock_UninstallComponents.mock_subprocess.check_output.assert_any_call(["cray", "artifacts", "delete", "config-data", {manifest_key}], universal_newlines=True)
+
         #self.mock_print.assert_called_once_with("Failed to remove loftsman manifest manifest_keys from S3")
 		
     def test_uninstall_ims_recipes(self):
-		
-        mock_command ='cmd1'
-        mock_s3_key = 'key1'
-        mock_s3_cmd = 'cmd_s3'
-        mock_ims_cmd = 'cmd_ims'
 	
         self.mock_UninstallComponents.uninstall_ims_recipes('recipe1', 'recipe_id1')
-		
-        self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('cmd1')
-        self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('cmd_s3')
-        self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('cmd_ims')
-	
+	    self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('cmd', shell=True, stderr=self.mock_UninstallComponents.mock_subprocess.STDOUT, universal_newlines=True)
+
     def test_uninstall_ims_recipes_err(self):
 	
         self.mock_UninstallComponents.mock_subprocess.check_output.side_effect = ProductInstallException(
@@ -180,21 +176,15 @@ class TestUninstallComponents(unittest.TestCase):
 
         with self.assertRaises(ProductInstallException) as context:
             self.mock_UninstallComponents.uninstall_ims_recipes('recipe1', 'recipe_id1')
-	
+	    
+        self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('cmd', shell=True, stderr=self.mock_UninstallComponents.mock_subprocess.STDOUT, universal_newlines=True)
         #self.mock_print.assert_called_once_with("Failed to remove IMS recipe 'recipe1' ")
 
-    def test_uninstall_ims_images(self):
-
-        mock_command ='cmd1'
-        mock_s3_key = 'key1'
-        mock_s3_cmd = 'cmd_s3'
-        mock_ims_cmd = 'cmd_ims'
+    def test_uninstall_ims_images(self)
 
         self.mock_UninstallComponents.uninstall_ims_images('image1', 'image_id1')
+        self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('cmd', shell=True, stderr=self.mock_UninstallComponents.mock_subprocess.STDOUT, universal_newlines=True)
 
-        self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('cmd1')
-        self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('cmd_s3')
-        self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('cmd_ims')
 
     def test_uninstall_ims_images_err(self):
 
@@ -202,8 +192,9 @@ class TestUninstallComponents(unittest.TestCase):
          "Error occurred" )
 
         with self.assertRaises(ProductInstallException) as context:
-            self.mock_UninstallComponents.uninstall_ims_recipes('image1', 'image_id1')
-
+            self.mock_UninstallComponents.uninstall_ims_images('image1', 'image_id1')
+        self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('cmd', shell=True, stderr=self.mock_UninstallComponents.mock_subprocess.STDOUT, universal_newlines=True)
+        
         #self.mock_print.assert_called_once_with("Failed to remove IMS image image1")
 '''
 class TestDeleteProductComponent(unittest.TestCase):
