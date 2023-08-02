@@ -30,4 +30,13 @@ set -e
 #
 #export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 #update-ca-certificates 2>/dev/null
+# initialize craycli
+API_GW="https://api-gw-service-nmn.local"
+ADMIN_SECRET=$(kubectl get secrets admin-client-auth -o jsonpath='{.data.client-secret}' | base64 -d)
+curl -k -s -d grant_type=client_credentials \
+        -d client_id=admin-client \
+        -d client_secret=$ADMIN_SECRET https://api-gw-service-nmn.local/keycloak/realms/shasta/protocol/openid-connect/token > /tmp/setup-token.json
+export CRAY_CREDENTIALS=/tmp/setup-token.json
+cray init --hostname $API_GW --no-auth --overwrite > /dev/null
+
 product-deletion-utility "$@"

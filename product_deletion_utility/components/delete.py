@@ -177,6 +177,7 @@ class UninstallComponents():
         """
         try:
             for manifest_key in manifest_keys:
+                manifest_key = manifest_key.replace('config-data/','')
                 print(f'Removing the following manifest - {manifest_key}')
                 output = subprocess.check_output(
                     ["cray", "artifacts", "delete", "config-data", "%s" % manifest_key], stderr=subprocess.STDOUT, universal_newlines=True)
