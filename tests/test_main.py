@@ -607,7 +607,6 @@ class TestDeleteProductComponent(unittest.TestCase):
             str(context.exception),
             "Error removing configmap1-version1 from product catalog: Command 'catalog_delete' returned non-zero exit status 1. Output: Error occurred"
         )
-'''
 	    
 class TestMain(unittest.TestCase):
     def setUp(self):
