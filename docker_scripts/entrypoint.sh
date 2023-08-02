@@ -40,7 +40,7 @@ set -ex
 #export REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/platform-ca-certs.crt
 # pip install certifi --upgrade
 #export PYTHONHTTPSVERIFY=0
-export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
+#export REQUESTS_CA_BUNDLE=/var/lib/ca-certificates/ca-bundle.pem
 # env
 #export SSL_CERT_DIR=/var/lib/ca-certificates/
 #update-ca-certificates -v
