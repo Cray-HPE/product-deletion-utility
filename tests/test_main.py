@@ -111,7 +111,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.mock_product_catalog_data = copy.deepcopy(MOCK_PRODUCT_CATALOG_DATA)
         self.mock_k8s_api.read_namespaced_config_map.return_value = Mock(data=self.mock_product_catalog_data)
         self.mock_k8s_api.read_namespaced_secret.return_value = Mock(data=MOCK_K8S_CRED_SECRET_DATA)
-        self.mock_environ = patch('product-deletion-utility.components.delete.os.environ').start()
+        self.mock_environ = patch('product_deletion_utility.components.delete.os.environ').start()
         self.mock_temporary_file = patch(
             'product-deletion-utility.components.delete.NamedTemporaryFile'
         ).start().return_value.__enter__.return_value
