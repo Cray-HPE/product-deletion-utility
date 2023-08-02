@@ -180,7 +180,7 @@ class TestUninstallComponents(unittest.TestCase):
         self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('cmd', shell=True, stderr=self.mock_UninstallComponents.mock_subprocess.STDOUT, universal_newlines=True)
         #self.mock_print.assert_called_once_with("Failed to remove IMS recipe 'recipe1' ")
 
-    def test_uninstall_ims_images(self)
+    def test_uninstall_ims_images(self):
 
         self.mock_UninstallComponents.uninstall_ims_images('image1', 'image_id1')
         self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('cmd', shell=True, stderr=self.mock_UninstallComponents.mock_subprocess.STDOUT, universal_newlines=True)
