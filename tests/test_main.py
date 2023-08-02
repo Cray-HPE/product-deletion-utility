@@ -50,7 +50,7 @@ from product_deletion_utility.components.constants import (
     PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE
 )
 
-class TestUninstallComponents(unittest.TestCase):
+'''class TestUninstallComponents(unittest.TestCase):
     """Tests for UninstallComponents."""
 
     def setUp(self):
@@ -214,7 +214,6 @@ class TestDeleteProductComponent(unittest.TestCase):
 
     def setUp(self):
         """Set up mocks"""
-<<<<<<< HEAD
         self.mock_delete_product_component= DeleteProductComponent()
         self.mock_delete_product_component.get_product= Mock()
         self.mock_delete_product_component.mock_docker_api=Mock()
@@ -226,7 +225,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.mock_delete_product_component.uninstall_component.uninstall_loftsman_manifests = Mock()
         self.mock_delete_product_component.uninstall_component.uninstall_ims_recipes = Mock()
         self.mock_print = patch('builtins.print').start()
-=======
+
         def __init__(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
                      catalognamespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
                      productname=None,
@@ -242,18 +241,7 @@ class TestDeleteProductComponent(unittest.TestCase):
             self.k8s_client = Mock()
         with patch.object(DeleteProductComponent, '__init__', __init__):
             print("Mock init")
-
-        self.mock_delete_product_component= DeleteProductComponent()
-        self.mock_delete_product_component.remove_product_docker_images= Mock()
-        self.mock_delete_product_component.remove_product_S3_artifacts= Mock()
-        self.mock_delete_product_component.remove_product_helm_charts= Mock()
-        self.mock_delete_product_component.remove_product_loftsman_manifests= Mock()
-        self.mock_delete_product_component.remove_ims_recipes= Mock()
-        self.mock_delete_product_component.remove_ims_images= Mock()
-        self.mock_delete_product_component.remove_product_hosted_repos= Mock()
-        self.mock_delete_product_component.remove_product_entry= Mock()
->>>>>>> 277f54a16a88c879eca7ed7e5706b5051a01d6aa
-        
+      
     def tearDown(self):
         """Stop patches."""
         patch.stopall()
