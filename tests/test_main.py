@@ -109,7 +109,7 @@ class TestUninstallComponents(unittest.TestCase):
         with self.assertRaises(ProductInstallException):
 
             self.mock_UninstallComponents.uninstall_S3_artifact('bucket1', 'key1')
-	        self.mock_UninstallComponents.mock_subprocess.check_output(["cray", "artifacts", "delete", 'bucket1', 'key1'], universal_newlines=True)
+            self.mock_UninstallComponents.mock_subprocess.check_output(["cray", "artifacts", "delete", 'bucket1', 'key1'], universal_newlines=True)
 
         self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with(["cray", "artifacts", "delete", 'bucket1', 'key1'], universal_newlines=True)
         #self.mock_print.assert_called_once_with("Failed to remove bucket1:key1 from S3 artifacts")
