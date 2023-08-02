@@ -115,10 +115,10 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.mock_temporary_file = patch(
             'product-deletion-utility.components.delete.NamedTemporaryFile'
         ).start().return_value.__enter__.return_value
-        self.mock_check_output = patch('product-deletion-utility.components.delete.subprocess.check_output').start()
+        self.mock_check_output = patch('product_deletion_utility.components.delete.subprocess.check_output').start()
         self.mock_print = patch('builtins.print').start()
-        self.mock_docker = patch('product-deletion-utility.components.delete.DockerApi').start().return_value
-        self.mock_nexus = patch('product-deletion-utility.components.delete.NexusApi').start().return_value
+        self.mock_docker = patch('product_deletion_utility.components.delete.DockerApi').start().return_value
+        self.mock_nexus = patch('product_deletion_utility.components.delete.NexusApi').start().return_value
         
         def create_and_assert_product_catalog(self):
             """Assert the product catalog was created as expected."""
