@@ -106,7 +106,6 @@ class TestDeleteProductComponent(unittest.TestCase):
 
     def setUp(self):
         """Set up mocks"""
-<<<<<<< HEAD
         self.mock_k8s_api = patch.object(DeleteProductComponent, '_get_k8s_api').start().return_value
         self.mock_product_catalog_data = copy.deepcopy(MOCK_PRODUCT_CATALOG_DATA)
         self.mock_k8s_api.read_namespaced_config_map.return_value = Mock(data=self.mock_product_catalog_data)
@@ -134,9 +133,6 @@ class TestDeleteProductComponent(unittest.TestCase):
             return product_catalog
 
         self.mock_delete_product_component= create_and_assert_product_catalog()
-=======
-        self.mock_delete_product_component= Mock()
->>>>>>> 200ec462b5fbce1270be7a2128965085fe73121d
         self.mock_delete_product_component.get_product= Mock()
         self.mock_delete_product_component.mock_docker_api=Mock()
         self.mock_delete_product_component.mock_nexus_api=Mock()
@@ -513,40 +509,5 @@ class TestDeleteProductComponent(unittest.TestCase):
             str(context.exception),
             "Error removing configmap1-version1 from product catalog: Command 'catalog_delete' returned non-zero exit status 1. Output: Error occurred"
         )
-<<<<<<< HEAD
-=======
-
-
-class TestMain(unittest.TestCase):
-    def setUp(self):
-        """Set up mocks."""
-        self.mock_delete = patch('product_deletion_utility.main.delete').start()
-
-    def tearDown(self):
-        """Stop patches."""
-        patch.stopall()
-
-    def test_delete_action(self):
-        """Test a basic delete."""
-        action = 'delete'
-        product = 'old-product'
-        version = '2.0.3'
-        patch('sys.argv', ['product-deletion-utility', action, product, version]).start()
-        main()
-        self.mock_delete.assert_called_once_with(
-            Namespace(
-                action=action,
-                product=product,
-                version=version,
-                docker_url=DEFAULT_DOCKER_URL,
-                nexus_url=DEFAULT_NEXUS_URL,
-                product_catalog_name=PRODUCT_CATALOG_CONFIG_MAP_NAME,
-                product_catalog_namespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
-                nexus_credentials_secret_name=NEXUS_CREDENTIALS_SECRET_NAME,
-                nexus_credentials_secret_namespace=NEXUS_CREDENTIALS_SECRET_NAMESPACE
-            )
-        )
-
 if __name__ == '__main__':
     unittest.main()
->>>>>>> 200ec462b5fbce1270be7a2128965085fe73121d
