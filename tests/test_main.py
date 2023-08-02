@@ -238,9 +238,9 @@ class TestDeleteProductComponent(unittest.TestCase):
 
         self.mock_delete_product_component.uninstall_component.uninstall_S3_artifact.assert_not_called()
 
-        #self.mock_print.assert_called_once_with(
+        '''self.mock_print.assert_called_once_with(
                 "Not removing S3 artifact bucket1:key1 used by the following other product versions: mock_similar_product"
-            )
+            )'''
 
     def test_remove_product_S3_artifacts_error(self):
         """Test removing S3 artifacts with ProductInstallException error"""
