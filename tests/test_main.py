@@ -29,6 +29,7 @@ from argparse import Namespace
 import subprocess
 import unittest
 from unittest.mock import patch, Mock
+import copy
 
 from urllib.error import HTTPError
 
