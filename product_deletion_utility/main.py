@@ -75,7 +75,7 @@ def delete(args):
     delete_product_catalog.remove_ims_images()
     delete_product_catalog.remove_ims_recipes()
     delete_product_catalog.remove_product_hosted_repos()
-    #delete_product_catalog.remove_product_entry()
+    delete_product_catalog.remove_product_entry()
 
 
 def main():
