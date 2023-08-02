@@ -113,7 +113,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.mock_k8s_api.read_namespaced_secret.return_value = Mock(data=MOCK_K8S_CRED_SECRET_DATA)
         self.mock_environ = patch('product_deletion_utility.components.delete.os.environ').start()
         self.mock_temporary_file = patch(
-            'product-deletion-utility.components.delete.NamedTemporaryFile'
+            'product_deletion_utility.components.delete.NamedTemporaryFile'
         ).start().return_value.__enter__.return_value
         self.mock_check_output = patch('product_deletion_utility.components.delete.subprocess.check_output').start()
         self.mock_print = patch('builtins.print').start()
