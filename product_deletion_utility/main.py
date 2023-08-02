@@ -27,16 +27,13 @@ Entry point for the product deletion utility.
 
 import logging
 
-from shasta_install_utility_common.products import ProductCatalog, ProductInstallException
+from product_deletion_utility.components.delete import DeleteProductComponent, ProductInstallException
 from product_deletion_utility.parser.parser import create_parser
-
 
 def configure_logging():
     """Configure logging for the root logger.
-
     This sets up the root logger with the default format, WARNING log level, and
     stderr log handler.
-
     Returns:
         None.
     """
@@ -52,37 +49,38 @@ def configure_logging():
 
 def delete(args):
     """Delete a version of a product.
-
     Args:
         args (argparse.Namespace): The CLI arguments to the command.
-
     Returns:
         None
-
     Raises:
         ProductInstallException: if uninstall failed.
     """
-    product_catalog = ProductCatalog(
-        name=args.product_catalog_name,
-        namespace=args.product_catalog_namespace,
+    delete_product_catalog = DeleteProductComponent(
+        catalogname=args.product_catalog_name,
+        catalognamespace=args.product_catalog_namespace,
+        productname=args.product,
+        productversion=args.version,
         nexus_url=args.nexus_url,
         docker_url=args.docker_url,
         nexus_credentials_secret_name=args.nexus_credentials_secret_name,
         nexus_credentials_secret_namespace=args.nexus_credentials_secret_namespace
     )
-    product_catalog.remove_product_docker_images(args.product, args.version)
-    product_catalog.uninstall_product_hosted_repos(args.product, args.version)
-    product_catalog.remove_product_entry(args.product, args.version)
 
-    # TODO (CRAYSAT-1262): Remove CFS configuration layer as appropriate
+    delete_product_catalog.remove_product_docker_images()
+    delete_product_catalog.remove_product_S3_artifacts()
+    delete_product_catalog.remove_product_helm_charts()
+    delete_product_catalog.remove_product_loftsman_manifests()
+    delete_product_catalog.remove_ims_images()
+    delete_product_catalog.remove_ims_recipes()
+    delete_product_catalog.remove_product_hosted_repos()
+    delete_product_catalog.remove_product_entry()
 
 
 def main():
     """Main entry point.
-
     Returns:
         None
-
     Raises:
         SystemExit: if a ProductInstallException occurs.
     """

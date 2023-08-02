@@ -27,15 +27,14 @@ Contains common CLI arguments for install utility images.
 
 import argparse
 
-from shasta_install_utility_common.constants import (
-    DEFAULT_DOCKER_URL,
-    DEFAULT_NEXUS_URL,
+from product_deletion_utility.components.constants import (
     NEXUS_CREDENTIALS_SECRET_NAME,
     NEXUS_CREDENTIALS_SECRET_NAMESPACE,
+    DEFAULT_NEXUS_URL,
+    DEFAULT_DOCKER_URL,
     PRODUCT_CATALOG_CONFIG_MAP_NAME,
     PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE
 )
-
 
 def create_parser():
     """Create an argument parser for this command.
@@ -50,7 +49,7 @@ def create_parser():
         choices=['delete', 'uninstall'],
         help='Specify the operation to execute on a product.'
     )
-    # The shasta-common-utility does not have 'product' as an argument.
+
     parser.add_argument(
         'product',
         help='The name of the product to delete or activate.'

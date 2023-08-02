@@ -1,8 +1,6 @@
-#!/bin/bash
-#
 # MIT License
 #
-# (C) Copyright 2022-2023 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,12 +20,15 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-set -e
-#
-# update-ca-certficates reads from /usr/local/share/ca-certificates
-# and updates /etc/ssl/certs/ca-certificates.crt
-# REQUESTS_CA_BUNDLE is used by python
-#
-#export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
-#update-ca-certificates 2>/dev/null
-product-deletion-utility "$@"
+"""
+Contains constant values for product-deletion-utility
+"""
+from nexusctl.common import DEFAULT_DOCKER_REGISTRY_API_BASE_URL
+from nexusctl.common import DEFAULT_NEXUS_API_BASE_URL
+
+DEFAULT_DOCKER_URL = DEFAULT_DOCKER_REGISTRY_API_BASE_URL
+DEFAULT_NEXUS_URL = DEFAULT_NEXUS_API_BASE_URL
+NEXUS_CREDENTIALS_SECRET_NAME = 'nexus-admin-credential'
+NEXUS_CREDENTIALS_SECRET_NAMESPACE = 'nexus'
+PRODUCT_CATALOG_CONFIG_MAP_NAME = 'cray-product-catalog'
+PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE = 'services'
