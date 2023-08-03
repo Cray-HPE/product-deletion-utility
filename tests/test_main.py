@@ -240,7 +240,19 @@ class TestDeleteProductComponent(unittest.TestCase):
             self.k8s_client = Mock()
         with patch.object(DeleteProductComponent, '__init__', __init__):
             print("Mock init")
-      
+
+
+## Print methods and attributes of object
+print ("Priniting methods and attributes of object")
+result = dir(patch.object)
+print(result)
+ 
+## Print only methods of objects
+methodList = [attribute for attribute in dir(patch.object)
+               if callable(getattr(patch.object, attribute))
+               and attribute.startswith('__') is False]
+print(methodList)
+	
     def tearDown(self):
         """Stop patches."""
         patch.stopall()
