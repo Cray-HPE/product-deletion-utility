@@ -260,9 +260,7 @@ class TestDeleteProductComponent(unittest.TestCase):
 
         self.mock_delete_product_component.remove_product_docker_images()
 
-        self.mock_delete_product_component.products= Mock()
-        self.mock_delete_product_component.products.return_value=[]
-        self.mock_delete_product_component.uninstall_componen.uninstall_docker_imaget(
+        self.mock_delete_product_component.uninstall_component.uninstall_docker_image(
             'image1', 'version1', self.mock_delete_product_component.mock_docker_api)
         self.mock_delete_product_component.uninstall_component.uninstall_docker_image.assert_called_once_with(
             'image1', 'version1', self.mock_delete_product_component.mock_docker_api)
