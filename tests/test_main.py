@@ -242,16 +242,16 @@ class TestDeleteProductComponent(unittest.TestCase):
             print("Mock init")
 
 
-## Print methods and attributes of object
-print ("Priniting methods and attributes of object")
-result = dir(patch.object)
-print(result)
+    ## Print methods and attributes of object
+    print ("Priniting methods and attributes of object")
+    result = dir(patch.object)
+    print(result)
  
-## Print only methods of objects
-methodList = [attribute for attribute in dir(patch.object)
-               if callable(getattr(patch.object, attribute))
-               and attribute.startswith('__') is False]
-print(methodList)
+    ## Print only methods of objects
+    methodList = [attribute for attribute in dir(patch.object)
+                 if callable(getattr(patch.object, attribute))
+                 and attribute.startswith('__') is False]
+    print(methodList)
 	
     def tearDown(self):
         """Stop patches."""
