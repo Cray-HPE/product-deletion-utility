@@ -227,7 +227,7 @@ class TestDeleteProductComponent(unittest.TestCase):
 
         self.pname = productname
         self.pversion = productversion
-        self.uninstall_component = Mock()
+        self.uninstall_component = UninstallComponents()
         self.k8s_client = Mock()
 
         with patch.object(DeleteProductComponent, '__init__', __init__):
