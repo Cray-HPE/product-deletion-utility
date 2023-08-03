@@ -233,11 +233,6 @@ class TestDeleteProductComponent(unittest.TestCase):
         with patch.object(DeleteProductComponent, '__init__', __init__):
             print("Mock init")
 
-        self.mock_delete_product_component = patch.object(DeleteProductComponent, '__init__', __init__)
-        methodList = [attribute for attribute in dir(patch.object(DeleteProductComponent, '__init__', __init__))
-               if callable(getattr(str, attribute))
-               and attribute.startswith('__') is False]
-        print(methodList)
         self.mock_delete_product_component.get_product = Mock()
         self.mock_delete_product_component.mock_docker_api = Mock()
         self.mock_delete_product_component.mock_nexus_api = Mock()
