@@ -223,10 +223,10 @@ class TestDeleteProductComponent(unittest.TestCase):
                      nexus_credentials_secret_name=NEXUS_CREDENTIALS_SECRET_NAME,
                      nexus_credentials_secret_namespace=NEXUS_CREDENTIALS_SECRET_NAMESPACE):
 
-            self.pname = productname
-            self.pversion = productversion
-            self.uninstall_component = Mock()
-            self.k8s_client = Mock()
+                 self.pname = productname
+                 self.pversion = productversion
+                 self.uninstall_component = Mock()
+                 self.k8s_client = Mock()
         with patch.object(DeleteProductComponent, '__init__', __init__):
             print("Mock init")
 		
