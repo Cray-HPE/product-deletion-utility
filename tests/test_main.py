@@ -214,7 +214,7 @@ class TestDeleteProductComponent(unittest.TestCase):
     def setUp(self):
         """Set up mocks"""
 
-           def __init__(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
+    def __init__(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
                      catalognamespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
                      productname=None,
                      productversion=None,
@@ -241,18 +241,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.mock_delete_product_component.uninstall_component.uninstall_loftsman_manifests = Mock()
         self.mock_delete_product_component.uninstall_component.uninstall_ims_recipes = Mock()
         self.mock_print = patch('builtins.print').start()
-
-    ## Print methods and attributes of object
-    print ("Priniting methods and attributes of object")
-    result = dir(patch.object)
-    print(result)
- 
-    ## Print only methods of objects
-    methodList = [attribute for attribute in dir(patch.object)
-                 if callable(getattr(patch.object, attribute))
-                 and attribute.startswith('__') is False]
-    print(methodList)
-	
+    	
     def tearDown(self):
         """Stop patches."""
         patch.stopall()
