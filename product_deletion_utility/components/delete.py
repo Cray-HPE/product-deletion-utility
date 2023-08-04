@@ -358,7 +358,7 @@ class DeleteProductComponent(ProductCatalog):
             return
         other_products = [
             p for p in self.products
-            if p.version != product.version or p.name != product.name
+            if p.name != product.name or p.version != product.version
         ]
 
         errors = False
@@ -410,7 +410,7 @@ class DeleteProductComponent(ProductCatalog):
             return
         other_products = [
             p for p in self.products
-            if p.version != product.version or p.name != product.name
+            if p.name != product.name or p.version != product.version
         ]
 
         errors = False
@@ -469,7 +469,7 @@ class DeleteProductComponent(ProductCatalog):
         )
         other_products = [
             p for p in self.products
-            if p.version != product.version or p.name != product.name
+            if p.name != product.name or p.version != product.version
         ]
 
         errors = False
@@ -544,7 +544,7 @@ class DeleteProductComponent(ProductCatalog):
             return
         other_products = [
             p for p in self.products
-            if p.version != product.version or p.name != product.name
+            if p.name != product.name or p.version != product.version
         ]
 
         errors = False
@@ -597,7 +597,7 @@ class DeleteProductComponent(ProductCatalog):
             return
         other_products = [
             p for p in self.products
-            if p.version != product.version or p.name != product.name
+            if p.name != product.name or p.version != product.version
         ]
 
         errors = False
@@ -650,7 +650,7 @@ class DeleteProductComponent(ProductCatalog):
             return
         other_products = [
             p for p in self.products
-            if p.version != product.version or p.name != product.name
+            if p.name != product.name or p.version != product.version
         ]
 
         errors = False
