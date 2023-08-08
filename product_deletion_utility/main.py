@@ -27,7 +27,8 @@ Entry point for the product deletion utility.
 
 from product_deletion_utility.components.delete import DeleteProductComponent, ProductInstallException
 from product_deletion_utility.parser.parser import create_parser
-from product_deletion_utility.logging import logger
+from product_deletion_utility.logging import logger, setup_file_logger
+
 
 def delete(args):
     """Delete a version of a product.
@@ -65,11 +66,13 @@ def main():
         None
     Raises:
         SystemExit: if a ProductInstallException occurs.
-    """    
+    """
     parser = create_parser()
     args = parser.parse_args()
     try:
         if args.action == 'delete' or args.action == 'uninstall':
+            if args.logfile is not None:
+                setup_file_logger(args.logfile)
             delete(args)
     except ProductInstallException as err:
         logger.critical(err)

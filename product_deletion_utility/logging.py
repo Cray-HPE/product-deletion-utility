@@ -31,7 +31,7 @@ import logging
     This sets up the root logger with the default format, WARNING log level, and
     stderr log handler.
 """
-CONSOLE_LOG_FORMAT = '%(name)s - %(levelname)s - %(message)s'
+CONSOLE_LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logger = logging.getLogger('product-deletion-utility')
 console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.WARNING)
@@ -39,3 +39,22 @@ console_formatter = logging.Formatter(CONSOLE_LOG_FORMAT)
 console_handler.setFormatter(console_formatter)
 console_handler.setLevel(logging.DEBUG)
 logger.addHandler(console_handler)
+
+
+def setup_file_logger(filename):
+    """Setup the file logger for the product-deletion-utlity.
+       The name of the file is the same as used by the prodmgr
+       CLI from where this instance of product-deletion-utlity
+       has been launched.
+    Args:
+        filename from args.
+    Returns:
+        None
+    Raises:
+        None
+   """
+    file_handler = logging.FileHandler(filename=filename)
+    file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')  # noqa: E501
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(file_formatter)
+    logger.addHandler(file_handler)
