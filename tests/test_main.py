@@ -115,22 +115,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.mock_delete_product_component.uninstall_component.uninstall_docker_image.assert_called_once_with(
             'image1','version1', self.mock_delete_product_component.mock_docker_api)
     
-'''    def test_remove_product_docker_images_error(self):
-        """Test removing docker images with ProductInstallException error"""
-
-        self.mock_delete_product_component.uninstall_component.uninstall_docker_image.side_effect= ProductInstallException(
-            "Error occurred"
-        )
-
-        with self.assertRaises(ProductInstallException):
-            self.mock_delete_product_component.remove_product_docker_images()
-        
-        self.mock_delete_product_component.uninstall_component.uninstall_docker_image.assert_called_once_with(
-            'image1','version1', self.mock_delete_product_component.mock_docker_api
-        )
-        
-        #self.mock_print.assert_called_once_with("Failed to remove image1:version1: Error occurred")
-'''
+      
     def test_remove_product_S3_artifacts(self):
         """Test removing product S3 artifacts"""
        
@@ -138,13 +123,9 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.mock_delete_product_component.remove_product_S3_artifacts.assert_called_once()
 
         self.mock_delete_product_component.uninstall_component.uninstall_S3_artifact('bucket1','key1')
-        self.mock_delete_product_component.uninstall_component.uninstall_S3_artifact.assert_called_once_with(
-            'bucket1','key1')
-
-        
-
-'''
-    def test_remove_product_S3_artifacts_error(self):
+        self.mock_delete_product_component.uninstall_component.uninstall_S3_artifact.assert_called_once_with('bucket1','key1')
+     
+    '''def test_remove_product_S3_artifacts_error(self):
         """Test removing S3 artifacts with ProductInstallException error"""
         mock_product=Mock()
         mock_product.s3_artifacts=[('bucket1','key1')]
@@ -162,8 +143,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         )
 
         
-        self.mock_print.assert_called_once_with("Failed to remove bucket1:key1: Error occurred")
-'''
+        self.mock_print.assert_called_once_with("Failed to remove bucket1:key1: Error occurred")'''
 
     def test_remove_product_helm_charts(self):
         """Test removing product helm charts"""
@@ -179,9 +159,7 @@ class TestDeleteProductComponent(unittest.TestCase):
 
         #self.mock_print.assert_called_once_with("Will be removing the following chart - chart1:version1")
 
-
-'''
-    def test_remove_product_helm_charts_error(self):
+    '''def test_remove_product_helm_charts_error(self):
         """Test removing helm charts with ProductInstallException error"""
         mock_product=Mock()
         mock_product.helm=[('chart1','version1')]
@@ -205,8 +183,7 @@ class TestDeleteProductComponent(unittest.TestCase):
             'chart1','version1', self.mock_delete_product_component.mock_nexus_api, 'chart1_id'
         )
 
-        self.mock_print.assert_called_once_with("Failed to remove chart1:version1: Error occurred")
-'''
+        self.mock_print.assert_called_once_with("Failed to remove chart1:version1: Error occurred")'''
 
     def test_remove_product_loftsman_manifests(self):
         
@@ -221,8 +198,7 @@ class TestDeleteProductComponent(unittest.TestCase):
 
         #self.mock_print.assert_called_once_with("Manifests to remove are - ['manifest1', 'manifest2']")
 
-'''   
-    def test_remove_product_loftsman_manifests_error(self):
+    '''def test_remove_product_loftsman_manifests_error(self):
         mock_product = Mock()
         mock_product.loftsman_manifests = ['manifest1', 'manifest2']
         self.mock_delete_product_component.get_product.return_value = mock_product
@@ -237,8 +213,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.assertEqual(
             str(context.exception),
             "One or more errors occurred while removing loftsman manifests for name version \n Error occurred"
-        )
-'''
+        )'''
 
     def test_remove_ims_recipes(self):
 
@@ -253,8 +228,7 @@ class TestDeleteProductComponent(unittest.TestCase):
 
         #self.mock_print.assert_called_once_with("ims recipes to remove are - ['recipe1', 'recipe2']")
 
-'''
-    def test_remove_ims_recipes_error(self):
+    '''def test_remove_ims_recipes_error(self):
         mock_product = Mock()
         mock_product.recipes = ['recipe1', 'recipe2']
         self.mock_delete_product_component.get_product.return_value = mock_product
@@ -269,8 +243,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.assertEqual(
             str(context.exception),
             "One or more errors occurred while removing IMS recipes for name version \n Error occurred"
-        )
-'''
+        )'''
 
     def test_remove_ims_images(self):
         self.mock_delete_product_component.remove_ims_images()
@@ -283,8 +256,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         )
         #self.mock_print.assert_called_once_with("IMS images to remove are - ['image1', 'image2']")
 
-'''
-    def test_remove_ims_images_error(self):
+    '''def test_remove_ims_images_error(self):
         mock_product = Mock()
         mock_product.images = ['image1', 'image2']
         self.mock_delete_product_component.get_product.return_value = mock_product
@@ -299,8 +271,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.assertEqual(
             str(context.exception),
             "One or more errors occurred while removing IMS images for name version \n Error occurred"
-        )
-'''
+        )'''
 
     def test_remove_product_hosted_repos(self):
 
@@ -315,8 +286,7 @@ class TestDeleteProductComponent(unittest.TestCase):
 
         #self.mock_print.assert_called_once_with("Hosted repositories to remove are - ['repo1', 'repo2']")
 
-'''
-    def test_remove_product_hosted_repos_error(self):
+    '''def test_remove_product_hosted_repos_error(self):
         mock_product = Mock()
         mock_product.hosted_repositories = ['repo1', 'repo2']
         self.mock_delete_product_component.get_product.return_value = mock_product
@@ -331,10 +301,9 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.assertEqual(
             str(context.exception),
             "One or more errors occurred while removing hosted repos for name version \n Error occurred"
-        )
-'''
-'''
-    def test_remove_product_entry(self):
+        )'''
+
+    '''def test_remove_product_entry(self):
         self.mock_delete_product_component.pname = 'product1'
         self.mock_delete_product_component.pversion = 'version1'
         self.mock_delete_product_component.name = 'configmap1'
@@ -351,8 +320,7 @@ class TestDeleteProductComponent(unittest.TestCase):
 
             mock_check_output.assert_called_once_with(['catalog_delete'])
             #self.mock_print.assert_called_once_with("Deleted configmap1-version1 from product catalog")
-'''
-'''
+
     def test_remove_product_entry_error(self):
         self.mock_delete_product_component.pname = 'product1'
         self.mock_delete_product_component.pversion = 'version1'
@@ -369,7 +337,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.assertEqual(
             str(context.exception),
             "Error removing configmap1-version1 from product catalog: Command 'catalog_delete' returned non-zero exit status 1. Output: Error occurred"
-        )
-'''
+        )'''
+
 if __name__ == '__main__':
     unittest.main()
