@@ -88,8 +88,7 @@ class TestUninstallComponents(unittest.TestCase):
 		
         with self.assertRaises(Exception):
             self.mock_UninstallComponents.uninstall_docker_image('image1', '2.0.0', self.mock_UninstallComponents.mock_docker_api)
-            self.mock_UninstallComponents.mock_docker_api.delete_image('image1', '2.0.0')
-            self.mock_UninstallComponents.mock_docker_api.delete_image.assert_called_once_with('image1', '2.0.0', self.mock_UninstallComponents.mock_docker_api)
+        self.mock_UninstallComponents.mock_docker_api.delete_image.assert_called_once_with('image1', '2.0.0', self.mock_UninstallComponents.mock_docker_api)
 		
         #self.mock_print.assert_called_once_with("Removed Docker image image1:2.0.0 ")
 		
