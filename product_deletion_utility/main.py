@@ -72,7 +72,7 @@ def main():
     try:
         if args.action == 'delete' or args.action == 'uninstall':
             if args.log_file is not None:
-                setup_file_logger(args.logfile)
+                setup_file_logger(args.log_file)
             delete(args)
     except ProductInstallException as err:
         logger.critical(err)
