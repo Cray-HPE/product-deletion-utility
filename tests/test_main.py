@@ -131,7 +131,6 @@ class TestDeleteProductComponent(unittest.TestCase):
         
         #self.mock_print.assert_called_once_with("Failed to remove image1:version1: Error occurred")
 '''
-    
     def test_remove_product_S3_artifacts(self):
         """Test removing product S3 artifacts"""
        
