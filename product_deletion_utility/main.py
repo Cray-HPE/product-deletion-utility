@@ -25,27 +25,9 @@
 Entry point for the product deletion utility.
 """
 
-import logging
-
 from product_deletion_utility.components.delete import DeleteProductComponent, ProductInstallException
 from product_deletion_utility.parser.parser import create_parser
-
-def configure_logging():
-    """Configure logging for the root logger.
-    This sets up the root logger with the default format, WARNING log level, and
-    stderr log handler.
-    Returns:
-        None.
-    """
-    CONSOLE_LOG_FORMAT = '%(levelname)s: %(message)s'
-    logger = logging.getLogger()
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.WARNING)
-    console_formatter = logging.Formatter(CONSOLE_LOG_FORMAT)
-    console_handler.setFormatter(console_formatter)
-    logger.addHandler(console_handler)
-    logger.setLevel(logging.WARNING)
-
+from product_deletion_utility.logging import logger
 
 def delete(args):
     """Delete a version of a product.
@@ -83,15 +65,14 @@ def main():
         None
     Raises:
         SystemExit: if a ProductInstallException occurs.
-    """
-    configure_logging()
+    """    
     parser = create_parser()
     args = parser.parse_args()
     try:
         if args.action == 'delete' or args.action == 'uninstall':
             delete(args)
     except ProductInstallException as err:
-        print(err)
+        logger.error(err)
         raise SystemExit(1)
 
 
