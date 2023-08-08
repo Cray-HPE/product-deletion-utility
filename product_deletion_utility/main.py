@@ -72,7 +72,7 @@ def main():
         if args.action == 'delete' or args.action == 'uninstall':
             delete(args)
     except ProductInstallException as err:
-        logger.error(err)
+        logger.critical(err)
         raise SystemExit(1)
 
 
