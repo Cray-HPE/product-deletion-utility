@@ -49,7 +49,7 @@ from product_deletion_utility.components.constants import (
     PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE
 )
 
-'''class TestUninstallComponents(unittest.TestCase):
+class TestUninstallComponents(unittest.TestCase):
     """Tests for UninstallComponents."""
 
     def setUp(self):
@@ -208,62 +208,8 @@ from product_deletion_utility.components.constants import (
         self.mock_UninstallComponents.mock_subprocess.check_output.assert_called_once_with('cmd', shell=True, stderr=self.mock_UninstallComponents.mock_subprocess.STDOUT, universal_newlines=True)
         
         #self.mock_print.assert_called_once_with("Failed to remove IMS image image1")
-'''
-def __init__(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
-                    catalognamespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
-                    productname=None,
-                    productversion=None,
-                    nexus_url=DEFAULT_NEXUS_URL,
-                    docker_url=DEFAULT_DOCKER_URL,
-                    nexus_credentials_secret_name=NEXUS_CREDENTIALS_SECRET_NAME,
-                    nexus_credentials_secret_namespace=NEXUS_CREDENTIALS_SECRET_NAMESPACE):
-
-            self.pname = productname
-            self.pversion = productversion
-            self.uninstall_component = Mock()
-            self.k8s_client = Mock()
 
 
-    
-
-    
-
-            
-class TestDeleteProductComponent(unittest.TestCase):
-
-    def setUp(self):
-        """Set up mocks"""
-
-        
-
-    def tearDown(self):
-        """Stop patches."""
-        patch.stopall()
-
-    def test_remove_product_docker_images(self):
-        """Test removing product docker images"""
-        with patch.object(DeleteProductComponent, '__init__', __init__):
-            self.mock_delete_product_component = DeleteProductComponent()
-
-        self.mock_delete_product_component.get_product = Mock()
-        
-        self.mock_delete_product_component.mock_docker_api = Mock()
-        self.mock_delete_product_component.uninstall_component = Mock()
-        self.mock_delete_product_component.uninstall_component.uninstall_docker_image = Mock()
-        self.mock_delete_product_component.remove_product_docker_images = Mock()
-
-        mock_product = Mock()
-        mock_product.docker_images = [
-            ('image1', 'version1'), ('image2', 'version2')]
-
-        self.mock_delete_product_component.get_product.return_value = mock_product
-
-        self.mock_delete_product_component.remove_product_docker_images()
-
-        self.mock_delete_product_component.uninstall_component.uninstall_docker_image(
-            'image1', 'version1', self.mock_delete_product_component.mock_docker_api)
-        self.mock_delete_product_component.uninstall_component.uninstall_docker_image.assert_called_once_with(
-            'image1', 'version1', self.mock_delete_product_component.mock_docker_api)
  
 
 if __name__ == '__main__':
