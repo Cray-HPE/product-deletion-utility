@@ -67,7 +67,7 @@ def create_parser():
     )
 
     parser.add_argument(
-        '--logfile',
+        '--log-file',
         help='Log file name for file based logging.',
     )
 
