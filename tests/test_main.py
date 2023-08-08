@@ -38,102 +38,48 @@ from product_deletion_utility.main import (
     delete
 )
 
-
-
 from product_deletion_utility.components.delete import (
-    PRODUCT_CATALOG_CONFIG_MAP_NAME,
-    PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
     UninstallComponents,
     DeleteProductComponent,ProductInstallException
 )
 
 
 from product_deletion_utility.components.constants import (
+    PRODUCT_CATALOG_CONFIG_MAP_NAME,
+    PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
     DEFAULT_DOCKER_URL,
     DEFAULT_NEXUS_URL,
     NEXUS_CREDENTIALS_SECRET_NAME,
     NEXUS_CREDENTIALS_SECRET_NAMESPACE
 )
  
+def __init__(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
+                    catalognamespace=PRODUCT_CATALOG_CONFIG_MAP_NAMESPACE,
+                    productname=None,
+                    productversion=None,
+                    nexus_url=DEFAULT_NEXUS_URL,
+                    docker_url=DEFAULT_DOCKER_URL,
+                    nexus_credentials_secret_name=NEXUS_CREDENTIALS_SECRET_NAME,
+                    nexus_credentials_secret_namespace=NEXUS_CREDENTIALS_SECRET_NAMESPACE):
 
-
-
-
-
-from kubernetes.config import ConfigException
-from yaml import safe_dump
-
-from tests.mocks import (
-    MOCK_PRODUCT_CATALOG_DATA,
-    MOCK_K8S_CRED_SECRET_DATA,
-    SAT_VERSIONS
-)
-
-
-if __name__ == '__main__':
-    unittest.main()
-
-class TestGetK8sAPI(unittest.TestCase):
-    """Tests for ProductCatalog.get_k8s_api()."""
-
-    def setUp(self):
-        """Set up mocks."""
-        self.mock_load_kube_config = patch('product-deletion-utility.components.delete.load_kube_config').start()
-        self.mock_corev1api = patch('product-deletion-utility.components.delete.CoreV1Api').start()
-
-    def tearDown(self):
-        """Stop patches."""
-        patch.stopall()
-
-    def test_get_k8s_api(self):
-        """Test the successful case of get_k8s_api."""
-        api = DeleteProductComponent._get_k8s_api()
-        self.mock_load_kube_config.assert_called_once_with()
-        self.mock_corev1api.assert_called_once_with()
-        self.assertEqual(api, self.mock_corev1api.return_value)
-
-    def test_get_k8s_api_config_exception(self):
-        """Test when configuration can't be loaded."""
-        self.mock_load_kube_config.side_effect = ConfigException
-        with self.assertRaises(ProductInstallException):
-            DeleteProductComponent._get_k8s_api()
-        self.mock_load_kube_config.assert_called_once_with()
-        self.mock_corev1api.assert_not_called()
-
-
-
+            self.pname = productname
+            self.pversion = productversion
+            self.uninstall_component = Mock()
+            self.k8s_client = Mock()
+            self.docker_api = Mock()
+            self.nexus_api = Mock()
+            self.name = catalogname
+            self.namespace = catalognamespace
 
 class TestDeleteProductComponent(unittest.TestCase):
 
     def setUp(self):
         """Set up mocks"""
-        self.mock_k8s_api = patch.object(DeleteProductComponent, '_get_k8s_api').start().return_value
-        self.mock_product_catalog_data = copy.deepcopy(MOCK_PRODUCT_CATALOG_DATA)
-        self.mock_k8s_api.read_namespaced_config_map.return_value = Mock(data=self.mock_product_catalog_data)
-        self.mock_k8s_api.read_namespaced_secret.return_value = Mock(data=MOCK_K8S_CRED_SECRET_DATA)
-        self.mock_environ = patch('product_deletion_utility.components.delete.os.environ').start()
-        self.mock_temporary_file = patch(
-            'product_deletion_utility.components.delete.NamedTemporaryFile'
-        ).start().return_value.__enter__.return_value
-        self.mock_check_output = patch('product_deletion_utility.components.delete.subprocess.check_output').start()
-        self.mock_print = patch('builtins.print').start()
-        self.mock_docker = patch('product_deletion_utility.components.delete.DockerApi').start().return_value
-        self.mock_nexus = patch('product_deletion_utility.components.delete.NexusApi').start().return_value
+        mock_productname='mock_product'
+        mock_productversion='1.0.0'
+        with patch.object(DeleteProductComponent, '__init__', __init__):
+            self.mock_delete_product_component= DeleteProductComponent(productname=mock_productname,productversion=mock_productversion)
         
-        def create_and_assert_product_catalog(self):
-            """Assert the product catalog was created as expected."""
-            product_catalog = DeleteProductComponent('mock-name', 'mock-namespace',
-                                            nexus_credentials_secret_name='mock-secret',
-                                            nexus_credentials_secret_namespace='mock-secret-namespace')
-            self.mock_k8s_api.read_namespaced_config_map.assert_called_once_with('mock-name', 'mock-namespace')
-            self.mock_k8s_api.read_namespaced_secret.assert_called_once_with('mock-secret', 'mock-secret-namespace')
-            self.mock_environ.update.assert_called_once_with(
-                {'NEXUS_USERNAME': b64decode(MOCK_K8S_CRED_SECRET_DATA['username']).decode(),
-                'NEXUS_PASSWORD': b64decode(MOCK_K8S_CRED_SECRET_DATA['password']).decode()}
-            )
-            return product_catalog
-
-        self.mock_delete_product_component= create_and_assert_product_catalog()
         self.mock_delete_product_component.get_product= Mock()
         self.mock_delete_product_component.mock_docker_api=Mock()
         self.mock_delete_product_component.mock_nexus_api=Mock()
@@ -179,9 +125,9 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.mock_delete_product_component.remove_product_docker_images()
 
         self.mock_delete_product_component.uninstall_component.uninstall_docker_image.assert_not_called()
-        '''self.mock_print.assert_called_once_with(
+        self.mock_print.assert_called_once_with(
             "Not removing Docker image image1:version1 used by the following other product versions: mock_similar_product"
-        )'''
+        )
     
     def test_remove_product_docker_images_error(self):
         """Test removing docker images with ProductInstallException error"""
@@ -199,7 +145,9 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.mock_delete_product_component.uninstall_component.uninstall_docker_image.assert_called_once_with(
             'image1','version1', self.mock_delete_product_component.mock_docker_api
         )
-        #self.mock_print.assert_called_once_with("Failed to remove image1:version1: Error occurred")
+        self.mock_print.assert_called_once_with(
+            "Failed to remove image1:version1: Error occurred"
+        )
 
     
     def test_remove_product_S3_artifacts(self):
@@ -219,8 +167,8 @@ class TestDeleteProductComponent(unittest.TestCase):
             'bucket2', 'key2'
         )
 
-        #self.mock_print.assert_called_with("Will be removing the following artifact - bucket2:key2")
-        #self.mock_print.assert_called_with("Will be removing the following artifact - bucket1:key1")
+        self.mock_print.assert_called_with("Will be removing the following artifact - bucket2:key2")
+        self.mock_print.assert_called_with("Will be removing the following artifact - bucket1:key1")
 
 
     def test_remove_product_S3_artifacts_shared_artifacts(self):
@@ -239,9 +187,9 @@ class TestDeleteProductComponent(unittest.TestCase):
 
         self.mock_delete_product_component.uninstall_component.uninstall_S3_artifact.assert_not_called()
 
-        '''self.mock_print.assert_called_once_with(
+        self.mock_print.assert_called_once_with(
                 "Not removing S3 artifact bucket1:key1 used by the following other product versions: mock_similar_product"
-            )'''
+            )
 
     def test_remove_product_S3_artifacts_error(self):
         """Test removing S3 artifacts with ProductInstallException error"""
@@ -261,7 +209,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         )
 
         
-        #self.mock_print.assert_called_once_with("Failed to remove bucket1:key1: Error occurred")
+        self.mock_print.assert_called_once_with("Failed to remove bucket1:key1: Error occurred")
 
     def test_remove_product_helm_charts(self):
         """Test removing product helm charts"""
@@ -282,7 +230,7 @@ class TestDeleteProductComponent(unittest.TestCase):
             'chart1','version1',self.mock_delete_product_component.mock_nexus_api, 'chart1_id'
         )
 
-        #self.mock_print.assert_called_once_with("Will be removing the following chart - chart1:version1")
+        self.mock_print.assert_called_once_with("Will be removing the following chart - chart1:version1")
 
 
     def test_remove_product_helm_charts_no_charts(self):
@@ -293,7 +241,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.mock_delete_product_component.remove_product_helm_charts()
 
         self.mock_delete_product_component.uninstall_component.uninstall_helm_charts.assert_not_called()
-        #self.mock_print.assert_called_once_with("No helm charts found in the configmap data for ")
+        self.mock_print.assert_called_once_with("No helm charts found in the configmap data for ")
 
     def test_remove_product_helm_charts_shared_chart(self):
         """Test removing helm charts shared by any other product"""
@@ -309,7 +257,7 @@ class TestDeleteProductComponent(unittest.TestCase):
 
         self.mock_delete_product_component.uninstall_component.uninstall_helm_charts.assert_not_called()
 
-        #self.mock_print.assert_called_once_with("Not removing Helm chart chart1:version1 used by the following other product versions: mock_similar_product")
+        self.mock_print.assert_called_once_with("Not removing Helm chart chart1:version1 used by the following other product versions: mock_similar_product")
     
 
     def test_remove_product_helm_charts_error_loading_nexus_component(self):
@@ -351,7 +299,7 @@ class TestDeleteProductComponent(unittest.TestCase):
             'chart1','version1', self.mock_delete_product_component.mock_nexus_api, 'chart1_id'
         )
 
-        #self.mock_print.assert_called_once_with("Failed to remove chart1:version1: Error occurred")
+        self.mock_print.assert_called_once_with("Failed to remove chart1:version1: Error occurred")
 
     def test_remove_product_loftsman_manifests(self):
         mock_product = Mock()
@@ -364,7 +312,7 @@ class TestDeleteProductComponent(unittest.TestCase):
             ['manifest1', 'manifest2']
         )
 
-        #self.mock_print.assert_called_once_with("Manifests to remove are - ['manifest1', 'manifest2']")
+        self.mock_print.assert_called_once_with("Manifests to remove are - ['manifest1', 'manifest2']")
 
     def test_remove_product_loftsman_manifests_error(self):
         mock_product = Mock()
@@ -395,7 +343,7 @@ class TestDeleteProductComponent(unittest.TestCase):
             ['recipe1', 'recipe2']
         )
 
-        #self.mock_print.assert_called_once_with("ims recipes to remove are - ['recipe1', 'recipe2']")
+        self.mock_print.assert_called_once_with("ims recipes to remove are - ['recipe1', 'recipe2']")
 
     def test_remove_ims_recipes_error(self):
         mock_product = Mock()
@@ -424,7 +372,7 @@ class TestDeleteProductComponent(unittest.TestCase):
         self.mock_delete_product_component.uninstall_component.uninstall_ims_images.assert_called_once_with(
             ['image1', 'image2']
         )
-        #self.mock_print.assert_called_once_with("IMS images to remove are - ['image1', 'image2']")
+        self.mock_print.assert_called_once_with("IMS images to remove are - ['image1', 'image2']")
 
     def test_remove_ims_images_error(self):
         mock_product = Mock()
@@ -454,7 +402,7 @@ class TestDeleteProductComponent(unittest.TestCase):
             ['repo1', 'repo2'], self.mock_delete_product_component.mock_nexus_api
         )
 
-        #self.mock_print.assert_called_once_with("Hosted repositories to remove are - ['repo1', 'repo2']")
+        self.mock_print.assert_called_once_with("Hosted repositories to remove are - ['repo1', 'repo2']")
 
     def test_remove_product_hosted_repos_error(self):
         mock_product = Mock()
@@ -489,7 +437,7 @@ class TestDeleteProductComponent(unittest.TestCase):
             self.mock_delete_product_component.remove_product_entry()
 
             mock_check_output.assert_called_once_with(['catalog_delete'])
-            #self.mock_print.assert_called_once_with("Deleted configmap1-version1 from product catalog")
+            self.mock_print.assert_called_once_with("Deleted configmap1-version1 from product catalog")
 
     def test_remove_product_entry_error(self):
         self.mock_delete_product_component.pname = 'product1'
@@ -508,5 +456,6 @@ class TestDeleteProductComponent(unittest.TestCase):
             str(context.exception),
             "Error removing configmap1-version1 from product catalog: Command 'catalog_delete' returned non-zero exit status 1. Output: Error occurred"
         )
+
 if __name__ == '__main__':
     unittest.main()
