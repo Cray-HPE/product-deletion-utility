@@ -70,6 +70,7 @@ def __init__(self, catalogname=PRODUCT_CATALOG_CONFIG_MAP_NAME,
             self.nexus_api = Mock()
             self.name = catalogname
             self.namespace = catalognamespace
+            self.products=[('product1', 'version1'), ('product2', 'version2')]
 
 class TestDeleteProductComponent(unittest.TestCase):
 
