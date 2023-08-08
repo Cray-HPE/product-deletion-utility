@@ -71,7 +71,7 @@ def main():
     args = parser.parse_args()
     try:
         if args.action == 'delete' or args.action == 'uninstall':
-            if args.logfile is not None:
+            if args.log_file is not None:
                 setup_file_logger(args.logfile)
             delete(args)
     except ProductInstallException as err:
