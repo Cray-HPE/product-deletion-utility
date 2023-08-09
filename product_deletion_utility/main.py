@@ -29,23 +29,9 @@ import logging
 
 from product_deletion_utility.components.delete import DeleteProductComponent, ProductInstallException
 from product_deletion_utility.parser.parser import create_parser
+from product_deletion_utility.logging import setup_file_logger, setup_console_logger
 
-def configure_logging():
-    """Configure logging for the root logger.
-    This sets up the root logger with the default format, WARNING log level, and
-    stderr log handler.
-    Returns:
-        None.
-    """
-    CONSOLE_LOG_FORMAT = '%(levelname)s: %(message)s'
-    logger = logging.getLogger()
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.WARNING)
-    console_formatter = logging.Formatter(CONSOLE_LOG_FORMAT)
-    console_handler.setFormatter(console_formatter)
-    logger.addHandler(console_handler)
-    logger.setLevel(logging.WARNING)
-
+LOGGER = logging.getLogger('product-deletion-utility')
 
 def delete(args):
     """Delete a version of a product.
@@ -64,8 +50,11 @@ def delete(args):
         nexus_url=args.nexus_url,
         docker_url=args.docker_url,
         nexus_credentials_secret_name=args.nexus_credentials_secret_name,
-        nexus_credentials_secret_namespace=args.nexus_credentials_secret_namespace
+        nexus_credentials_secret_namespace=args.nexus_credentials_secret_namespace,
+        dry_run=args.dry_run
     )
+    if args.dry_run:
+        LOGGER.debug(f'dryrun option is passed')
 
     delete_product_catalog.remove_product_docker_images()
     delete_product_catalog.remove_product_S3_artifacts()
@@ -74,7 +63,8 @@ def delete(args):
     delete_product_catalog.remove_ims_images()
     delete_product_catalog.remove_ims_recipes()
     delete_product_catalog.remove_product_hosted_repos()
-    delete_product_catalog.remove_product_entry()
+    if not args.dry_run:
+        delete_product_catalog.remove_product_entry()
 
 
 def main():
@@ -84,14 +74,16 @@ def main():
     Raises:
         SystemExit: if a ProductInstallException occurs.
     """
-    configure_logging()
     parser = create_parser()
     args = parser.parse_args()
     try:
         if args.action == 'delete' or args.action == 'uninstall':
+            setup_console_logger()
+            if args.log_file is not None:
+                setup_file_logger(args.log_file)
             delete(args)
     except ProductInstallException as err:
-        print(err)
+        LOGGER.critical(err)
         raise SystemExit(1)
 
 
