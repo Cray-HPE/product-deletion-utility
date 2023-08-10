@@ -68,11 +68,13 @@ def create_parser():
     parser.add_argument(
         '-d', '--dry-run',
         help='Lists the components that would be deleted for the provided product:version',
-        default=False
+        default=False,
+        type=lambda x: (str(x).lower() == 'true')
     )
     parser.add_argument(
         '--log-file',
         help='Log file name for file based logging.',
+        default=DEFAULT_LOG_DIR,
     )
 
     product_catalog_group = parser.add_argument_group('product-catalog')
