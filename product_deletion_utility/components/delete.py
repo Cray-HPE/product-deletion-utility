@@ -509,7 +509,7 @@ class DeleteProductComponent(ProductCatalog):
         Raises:
             ProductInstallException: If an error occurred removing a helm chart.
         """
-        charts_to_remove = self.product.helm
+        charts_to_remove = self.product.helm_charts
         d_logger.debug(f'Charts to remove are - {charts_to_remove}')
         if not charts_to_remove:
             d_logger.info(
@@ -533,7 +533,7 @@ class DeleteProductComponent(ProductCatalog):
                 other_product for other_product in other_products
                 if any([
                     other_chart_name == chart_name and other_chart_version == chart_version
-                    for other_chart_name, other_chart_version in other_product.helm
+                    for other_chart_name, other_chart_version in other_product.helm_charts
                 ])
             ]
             if other_products_with_same_helm_chart:
