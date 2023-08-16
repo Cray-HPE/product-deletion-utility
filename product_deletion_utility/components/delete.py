@@ -405,7 +405,7 @@ class DeleteProductComponent(ProductCatalog):
         images_to_remove = self.product.docker_images
         d_logger.debug(f'Images to remove are - {images_to_remove}')
         if not images_to_remove:
-            d_logger.warning(
+            d_logger.info(
                 f"No docker images found in the configmap data for {self.pname}:{self.pversion}")
             return
         other_products = [
@@ -429,7 +429,7 @@ class DeleteProductComponent(ProductCatalog):
                               f'{", ".join(str(p) for p in other_products_with_same_docker_image)}')
             else:
                 try:
-                    d_logger.info(
+                    d_logger.debug(
                         f'The following docker image would be removed - {image_name}:{image_version}')
                     if not self.dry_run:
                         self.uninstall_component.uninstall_docker_image(
@@ -459,7 +459,7 @@ class DeleteProductComponent(ProductCatalog):
         artifacts_to_remove = self.product.s3_artifacts
         d_logger.debug(f'Artifacts to remove are - {artifacts_to_remove}')
         if not artifacts_to_remove:
-            d_logger.warning(
+            d_logger.info(
                 f"No S3 artifacts found in the configmap data for {self.pname}:{self.pversion}")
             return
         other_products = [
@@ -483,7 +483,7 @@ class DeleteProductComponent(ProductCatalog):
                               f'{", ".join(str(p) for p in other_products_with_same_artifact_key)}')
             else:
                 try:
-                    d_logger.info(
+                    d_logger.debug(
                         f'The following artifact would be removed - {artifact_bucket}:{artifact_key}')
                     if not self.dry_run:
                         self.uninstall_component.uninstall_S3_artifact(
@@ -544,7 +544,7 @@ class DeleteProductComponent(ProductCatalog):
                 try:
                     for component in nexus_charts.components:
                         if component.name == chart_name and component.version == chart_version:
-                            d_logger.info(
+                            d_logger.debug(
                                 f'The following chart - {chart_name}:{chart_version} with ID {component.id} would be removed')
                             if not self.dry_run:
                                 self.uninstall_component.uninstall_helm_charts(
@@ -575,7 +575,7 @@ class DeleteProductComponent(ProductCatalog):
                 f"No loftsman manifests found in the configmap data for {self.pname}:{self.pversion}")
             return
         try:
-            d_logger.info(
+            d_logger.debug(
                 f'The following manifests would be removed - {manifests_to_remove}')
             if not self.dry_run:
                 self.uninstall_component.uninstall_loftsman_manifests(
@@ -622,7 +622,7 @@ class DeleteProductComponent(ProductCatalog):
                               f'{", ".join(str(p) for p in other_products_with_same_recipe)}')
             else:
                 try:
-                    d_logger.info(
+                    d_logger.debug(
                         f'The following IMS recipe - {recipe_name}:{recipe_id} would be removed')
                     if not self.dry_run:
                         self.uninstall_component.uninstall_ims_recipes(
@@ -675,7 +675,7 @@ class DeleteProductComponent(ProductCatalog):
                               f'{", ".join(str(p) for p in other_products_with_same_image)}')
             else:
                 try:
-                    d_logger.info(
+                    d_logger.debug(
                         f'The following IMS image - {image_name}:{image_id} would be removed')
                     if not self.dry_run:
                         self.uninstall_component.uninstall_ims_images(
@@ -729,7 +729,7 @@ class DeleteProductComponent(ProductCatalog):
                               f'{", ".join(str(p) for p in other_products_with_same_hosted_repo)}')
             else:
                 try:
-                    d_logger.info(
+                    d_logger.debug(
                         f'The following hosted repo - {hosted_repo_name} would be removed')
                     if not self.dry_run:
                         self.uninstall_component.uninstall_hosted_repos(
