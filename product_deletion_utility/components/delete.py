@@ -429,11 +429,15 @@ class DeleteProductComponent(ProductCatalog):
                               f'{", ".join(str(p) for p in other_products_with_same_docker_image)}')
             else:
                 try:
-                    d_logger.debug(
-                        f'The following docker image would be removed - {image_name}:{image_version}')
                     if not self.dry_run:
+                        d_logger.debug(
+                            f'The following docker image would be removed - {image_name}:{image_version}')
                         self.uninstall_component.uninstall_docker_image(
                             image_name, image_version, self.docker_api)
+                    else:
+                        d_logger.info(
+                            f'The following docker image would be removed - {image_name}:{image_version}')
+
                 except ProductInstallException as err:
                     d_logger.error(
                         f'Failed to remove {image_name}:{image_version}: {err}')
@@ -483,11 +487,15 @@ class DeleteProductComponent(ProductCatalog):
                               f'{", ".join(str(p) for p in other_products_with_same_artifact_key)}')
             else:
                 try:
-                    d_logger.debug(
-                        f'The following artifact would be removed - {artifact_bucket}:{artifact_key}')
                     if not self.dry_run:
+                        d_logger.debug(
+                            f'The following artifact would be removed - {artifact_bucket}:{artifact_key}')
                         self.uninstall_component.uninstall_S3_artifact(
                             artifact_bucket, artifact_key)
+                    else:
+                        d_logger.info(
+                            f'The following artifact would be removed - {artifact_bucket}:{artifact_key}')
+
                 except ProductInstallException as err:
                     d_logger.error(
                         f'Failed to remove {artifact_bucket}:{artifact_bucket}: {err}')
@@ -544,11 +552,15 @@ class DeleteProductComponent(ProductCatalog):
                 try:
                     for component in nexus_charts.components:
                         if component.name == chart_name and component.version == chart_version:
-                            d_logger.debug(
-                                f'The following chart - {chart_name}:{chart_version} with ID {component.id} would be removed')
                             if not self.dry_run:
+                                d_logger.debug(
+                                    f'The following chart - {chart_name}:{chart_version} with ID {component.id} would be removed')
                                 self.uninstall_component.uninstall_helm_charts(
                                     chart_name, chart_version, self.nexus_api, component.id)
+                            else:
+                                d_logger.info(
+                                    f'The following chart - {chart_name}:{chart_version} with ID {component.id} would be removed')
+
                 except ProductInstallException as err:
                     d_logger.error(
                         f'Failed to remove {chart_name}:{chart_version}: {err}')
@@ -575,11 +587,15 @@ class DeleteProductComponent(ProductCatalog):
                 f"No loftsman manifests found in the configmap data for {self.pname}:{self.pversion}")
             return
         try:
-            d_logger.debug(
-                f'The following manifests would be removed - {manifests_to_remove}')
             if not self.dry_run:
+                d_logger.debug(
+                    f'The following manifests would be removed - {manifests_to_remove}')
                 self.uninstall_component.uninstall_loftsman_manifests(
                     manifests_to_remove)
+            else:
+                d_logger.info(
+                    f'The following manifests would be removed - {manifests_to_remove}')
+
         except ProductInstallException as err:
             raise ProductInstallException(f'One or more errors occurred while removing '
                                           f'loftsman manifests for {self.pname} {self.pversion} \n {err}')
@@ -622,11 +638,14 @@ class DeleteProductComponent(ProductCatalog):
                               f'{", ".join(str(p) for p in other_products_with_same_recipe)}')
             else:
                 try:
-                    d_logger.debug(
-                        f'The following IMS recipe - {recipe_name}:{recipe_id} would be removed')
                     if not self.dry_run:
+                        d_logger.debug(
+                            f'The following IMS recipe - {recipe_name}:{recipe_id} would be removed')
                         self.uninstall_component.uninstall_ims_recipes(
                             recipe_name, recipe_id)
+                    else:
+                        d_logger.info(
+                            f'The following IMS recipe - {recipe_name}:{recipe_id} would be removed')
                 except ProductInstallException as err:
                     d_logger.error(
                         f'Failed to remove {recipe_name}:{recipe_id}: {err}')
@@ -675,11 +694,15 @@ class DeleteProductComponent(ProductCatalog):
                               f'{", ".join(str(p) for p in other_products_with_same_image)}')
             else:
                 try:
-                    d_logger.debug(
-                        f'The following IMS image - {image_name}:{image_id} would be removed')
                     if not self.dry_run:
+                        d_logger.debug(
+                            f'The following IMS image - {image_name}:{image_id} would be removed')
                         self.uninstall_component.uninstall_ims_images(
                             image_name, image_id)
+                    else:
+                        d_logger.info(
+                            f'The following IMS image - {image_name}:{image_id} would be removed')
+
                 except ProductInstallException as err:
                     d_logger.error(
                         f'Failed to remove {image_name}:{image_id}: {err}')
@@ -729,11 +752,15 @@ class DeleteProductComponent(ProductCatalog):
                               f'{", ".join(str(p) for p in other_products_with_same_hosted_repo)}')
             else:
                 try:
-                    d_logger.debug(
-                        f'The following hosted repo - {hosted_repo_name} would be removed')
                     if not self.dry_run:
+                        d_logger.debug(
+                            f'The following hosted repo - {hosted_repo_name} would be removed')
                         self.uninstall_component.uninstall_hosted_repos(
                             hosted_repo_name, self.nexus_api)
+                    else:
+                        d_logger.info(
+                            f'The following hosted repo - {hosted_repo_name} would be removed')
+
                 except ProductInstallException as err:
                     d_logger.error(
                         f'Failed to remove {hosted_repo_name} : {err}')
