@@ -23,7 +23,7 @@
 #
 # Dockerfile for product_deletion_utility
 
-FROM artifactory.algol60.net/csm-docker/stable/registry.suse.com/suse/sle15:15.6
+FROM artifactory.algol60.net/csm-docker/stable/registry.suse.com/suse/sle15:15.7
 
 ENV VIRTUAL_ENV=/opt/venv
 ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"

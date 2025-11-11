@@ -8,8 +8,8 @@ CSM_RPMS_HPE_STABLE="https://${SLES_REPO_USERNAME:-}${SLES_REPO_PASSWORD+:}${SLE
 SLES_MIRROR="https://${SLES_REPO_USERNAME:-}${SLES_REPO_PASSWORD+:}${SLES_REPO_PASSWORD}@artifactory.algol60.net/artifactory/sles-mirror"
 ARCH=x86_64
 zypper --non-interactive rr --all
-zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Basesystem/15-SP6/${ARCH}/product?auth=basic sles15sp6-Module-Basesystem-product
-zypper --non-interactive ar --no-gpgcheck ${CSM_RPMS_HPE_STABLE}/?auth=basic CSM-SLE-15SP6
+zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Basesystem/15-SP7/${ARCH}/product?auth=basic sles15sp7-Module-Basesystem-product
+zypper --non-interactive ar --no-gpgcheck ${CSM_RPMS_HPE_STABLE}/?auth=basic CSM-SLE-15SP7
 zypper update -y
 zypper install -y craycli git-core bash python311-base curl jq
 zypper clean -a && zypper --non-interactive rr --all && rm -f /etc/zypp/repos.d/*
