@@ -11,6 +11,7 @@ zypper --non-interactive rr --all
 zypper --non-interactive ar ${SLES_MIRROR}/Products/SLE-Module-Basesystem/15-SP7/${ARCH}/product?auth=basic sles15sp7-Module-Basesystem-product
 zypper --non-interactive ar --no-gpgcheck ${CSM_RPMS_HPE_STABLE}/?auth=basic CSM-SLE-15SP7
 zypper update -y
+zypper search --details git-core
 zypper install -y craycli git-core bash python311-base curl jq
 zypper clean -a && zypper --non-interactive rr --all && rm -f /etc/zypp/repos.d/*
 ln -sf /usr/bin/python3.11 /usr/bin/python3
